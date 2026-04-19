@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Booster Bundle 151 - Cărturești",
+        "url": "https://carturesti.ro/jucarii/pokemon-tcg-booster-bundle-151",
+        "stock_selector": ".product-availability",
+        "out_of_stock_text": "stoc epuizat"
+    },
+    {
+        "name": "ETB Paldean Fates - Smyk",
+        "url": "https://www.smyk.ro/pokemon-etb",
+        "stock_selector": "div.stock-info button",
+        "out_of_stock_text": "indisponibil"
+    }
+]
