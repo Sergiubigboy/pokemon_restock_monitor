@@ -1,0 +1,6 @@
+2026/04/21-00:12:28.057 1f94 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\chrome_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/04/21-00:12:28.057 1f94 Recovering log #4
+2026/04/21-00:12:28.058 1f94 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\chrome_profile\Default\EdgeCoupons/coupons_data.db/000004.log 
+2026/04/21-00:12:28.124 8094 Level-0 table #8: started
+2026/04/21-00:12:28.131 8094 Level-0 table #8: 682216 bytes OK
+2026/04/21-00:12:28.138 8094 Delete type=0 #4

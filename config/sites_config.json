@@ -1,14 +1,42 @@
 [
     {
-        "name": "Booster Bundle 151 - Cărturești",
-        "url": "https://carturesti.ro/jucarii/pokemon-tcg-booster-bundle-151",
-        "stock_selector": ".product-availability",
-        "out_of_stock_text": "stoc epuizat"
+        "name": "Pokemon TCG - Noriel",
+        "url": "https://noriel.ro/catalogsearch/result/?brand=Pokemon&q=Pokemon%20tcg",
+        "type": "search_page",
+        "card_selector": ".product-item",
+        "title_selector": ".product-item-name",
+        "price_selector": ".price",
+        "in_stock_text": "adauga in cos",
+        "profile_folder": "noriel_profile"
     },
     {
-        "name": "ETB Paldean Fates - Smyk",
-        "url": "https://www.smyk.ro/pokemon-etb",
-        "stock_selector": "div.stock-info button",
-        "out_of_stock_text": "indisponibil"
+        "name": "Pokemon In Stoc - Redgoblin",
+        "url": "https://redgoblin.ro/collections/pokemon?filter.p.m.custom.serie_univers=Pokemon&filter.v.availability=1",
+        "type": "search_page",
+        "card_selector": ".productitem",
+        "title_selector": ".productitem--title",
+        "price_selector": ".price",
+        "in_stock_text": "", 
+        "profile_folder": "redgoblin_profile"
+    },
+    {
+        "name": "Pokemon TCG - SMYK",
+        "url": "https://smyk.ro/personaj/pokemon?category=0302",
+        "type": "search_page",
+        "card_selector": ".complex-product",
+        "title_selector": ".complex-product__name",
+        "price_selector": ".price--new",
+        "in_stock_text": "adauga in cos",
+        "profile_folder": "smyk_profile"
+    },
+    {
+        "name": "Pokemon TCG - Cărturești",
+        "url": "https://carturesti.ro/product/search/pokemon%C2%A0tcg",
+        "type": "search_page",
+        "card_selector": "prod-grid-box",
+        "title_selector": ".md-title",
+        "price_selector": ".suma",
+        "in_stock_text": "în stoc",
+        "profile_folder": "carturesti_profile"
     }
 ]
