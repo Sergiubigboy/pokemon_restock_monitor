@@ -1,9 +1,0 @@
-2026/04/23-00:38:52.808 7bc0 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/04/23-00:38:52.810 7bc0 Recovering log #597
-2026/04/23-00:38:52.812 7bc0 Level-0 table #600: started
-2026/04/23-00:38:52.819 7bc0 Level-0 table #600: 682224 bytes OK
-2026/04/23-00:38:52.820 7bc0 Recovering log #599
-2026/04/23-00:38:52.820 7bc0 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\EdgeCoupons/coupons_data.db/000599.log 
-2026/04/23-00:38:52.823 7bc0 Delete type=0 #597
-2026/04/23-00:38:52.827 1404 Level-0 table #602: started
-2026/04/23-00:38:52.833 1404 Level-0 table #602: 682224 bytes OK

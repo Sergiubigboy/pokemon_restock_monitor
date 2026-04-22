@@ -1,6 +1,0 @@
-2026/04/23-00:39:01.835 8404 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\carturesti_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/04/23-00:39:01.837 8404 Recovering log #467
-2026/04/23-00:39:01.839 8404 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\carturesti_profile\Default\EdgeCoupons/coupons_data.db/000467.log 
-2026/04/23-00:39:01.983 67e4 Level-0 table #471: started
-2026/04/23-00:39:01.990 67e4 Level-0 table #471: 682224 bytes OK
-2026/04/23-00:39:01.994 67e4 Delete type=0 #467

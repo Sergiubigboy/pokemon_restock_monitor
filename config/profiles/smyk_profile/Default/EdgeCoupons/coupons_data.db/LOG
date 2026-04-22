@@ -1,9 +1,0 @@
-2026/04/23-00:45:03.899 a0e8 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\smyk_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/04/23-00:45:03.900 a0e8 Recovering log #447
-2026/04/23-00:45:03.905 a0e8 Level-0 table #450: started
-2026/04/23-00:45:03.911 a0e8 Level-0 table #450: 682224 bytes OK
-2026/04/23-00:45:03.912 a0e8 Recovering log #449
-2026/04/23-00:45:03.913 a0e8 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\smyk_profile\Default\EdgeCoupons/coupons_data.db/000449.log 
-2026/04/23-00:45:03.916 a0e8 Delete type=0 #447
-2026/04/23-00:45:03.917 e2c Compacting 6@0 + 1@1 files
-2026/04/23-00:45:03.930 e2c compacted to: files[ 6 1 1 0 0 0 0 ]
