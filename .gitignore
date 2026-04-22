@@ -10,5 +10,13 @@ env/
 __pycache__/
 *.pyc
 
+# Ignoră toate fișierele text
+*.txt
+
+# Excepție: Păstrează fișierul requirements.txt (dacă îl ai)
+!requirements.txt
+
+# Ignoră folderele cu profiluri de browser
+config/profiles/
 chrome_profile/
-profiles/
+*_profile/
