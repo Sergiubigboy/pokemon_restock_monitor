@@ -7,7 +7,8 @@
         "title_selector": ".product-item-name",
         "price_selector": ".price",
         "in_stock_text": "adauga in cos",
-        "profile_folder": "noriel_profile"
+        "profile_folder": "noriel_profile",
+        "headless": false
     },
     {
         "name": "Pokemon In Stoc - Redgoblin",
@@ -38,5 +39,66 @@
         "price_selector": ".suma",
         "in_stock_text": "în stoc",
         "profile_folder": "carturesti_profile"
+    },
+    {
+        "name": "Pokemon TCG - Krit",
+        "url": "https://krit.ro/categorie/pokemon?page=1&sort=new&filters=filterAvailability_In%20Stoc",
+        "type": "search_page",
+        "card_selector": ".product",
+        "title_selector": ".product-title",
+        "price_selector": ".price",
+        "in_stock_text": "",
+        "profile_folder": "krit_profile",
+        "headless": false
+    },
+    {
+        "name": "Pokemon TCG - Lexshop",
+        "url": "https://www.lexshop.ro/pokemon-tcg/s-instock?_crawl=0",
+        "type": "search_page",
+        "card_selector": ".product-box",
+        "title_selector": ".title",
+        "price_selector": ".price",
+        "in_stock_text": "adauga",
+        "profile_folder": "lexshop_profile"
+    },
+    {
+        "name": "Pokemon TCG - Bookcity",
+        "url": "https://www.bookcity.ro/search/pokemon+tcg",
+        "type": "search_page",
+        "card_selector": ".product-item",
+        "title_selector": ".product-item-name",
+        "price_selector": ".price",
+        "in_stock_text": "adauga in cos",
+        "profile_folder": "bookcity_profile"
+    },
+    {
+        "name": "Pokemon TCG - PokeMANIA",
+        "url": "https://pokemania.ro/seturi-pokemon-tcg?price[max]=1017&f=1745",
+        "type": "search_page",
+        "card_selector": ".product:not(:has(.grid-image--out-of-stock))",
+        "title_selector": ".product__name",
+        "price_selector": ".product__info--price-gross",
+        "in_stock_text": "",
+        "profile_folder": "pokemania_profile"
+    },
+    {
+        "name": "Pokemon TCG - Fortareata",
+        "url": "https://fortareata.ro/?s=Pokemon+tcg+&post_type=product&dgwt_wcas=1",
+        "type": "search_page",
+        "card_selector": "li.product.instock",
+        "title_selector": ".woocommerce-loop-product__title",
+        "price_selector": ".price",
+        "in_stock_text": "",
+        "profile_folder": "fortareata_profile"
+    },
+    {
+        "name": "Pokemon TCG - Europosters",
+        "url": "https://www.europosters.ro/search/?q=pokemon+tcg&f[idt]=merchandise#catalog-filter",
+        "type": "search_page",
+        "card_selector": ".product-thumb",
+        "title_selector": ".product-name",
+        "price_selector": ".price",
+        "in_stock_text": "pe stoc",
+        "profile_folder": "europosters_profile"
     }
 ]

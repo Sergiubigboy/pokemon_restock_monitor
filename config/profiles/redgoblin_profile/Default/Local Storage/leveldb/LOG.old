@@ -1,5 +1,14 @@
-2026/04/21-21:32:45.823 2748 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\Local Storage\leveldb/MANIFEST-000001
-2026/04/21-21:32:45.827 2748 Recovering log #150
-2026/04/21-21:32:45.827 2748 Level-0 table #152: started
-2026/04/21-21:32:45.836 2748 Level-0 table #152: 9038 bytes OK
-2026/04/21-21:32:45.841 2748 Delete type=0 #150
+2026/04/23-00:38:47.764 7598 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/04/23-00:38:47.767 7598 Recovering log #504
+2026/04/23-00:38:47.767 7598 Level-0 table #506: started
+2026/04/23-00:38:47.774 7598 Level-0 table #506: 8505 bytes OK
+2026/04/23-00:38:47.781 7598 Delete type=0 #504
+2026/04/23-00:38:47.781 970c Compacting 4@0 + 1@1 files
+2026/04/23-00:38:47.788 970c Generated table #508@0: 16 keys, 8989 bytes
+2026/04/23-00:38:47.789 970c Compacted 4@0 + 1@1 files => 8989 bytes
+2026/04/23-00:38:47.791 970c compacted to: files[ 0 1 0 0 0 0 0 ]
+2026/04/23-00:38:47.792 970c Delete type=2 #495
+2026/04/23-00:38:47.792 970c Delete type=2 #497
+2026/04/23-00:38:47.792 970c Delete type=2 #500
+2026/04/23-00:38:47.792 970c Delete type=2 #503
+2026/04/23-00:38:47.792 970c Delete type=2 #506

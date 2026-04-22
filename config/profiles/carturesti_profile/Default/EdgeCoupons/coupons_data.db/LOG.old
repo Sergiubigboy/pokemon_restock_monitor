@@ -1,9 +1,6 @@
-2026/04/21-21:32:58.077 d3c Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\carturesti_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/04/21-21:32:58.078 d3c Recovering log #174
-2026/04/21-21:32:58.079 d3c Level-0 table #177: started
-2026/04/21-21:32:58.087 d3c Level-0 table #177: 682224 bytes OK
-2026/04/21-21:32:58.088 d3c Recovering log #176
-2026/04/21-21:32:58.088 d3c Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\carturesti_profile\Default\EdgeCoupons/coupons_data.db/000176.log 
-2026/04/21-21:32:58.091 d3c Delete type=0 #174
-2026/04/21-21:32:58.093 71e0 Level-0 table #179: started
-2026/04/21-21:32:58.101 71e0 Level-0 table #179: 682224 bytes OK
+2026/04/23-00:39:01.835 8404 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\carturesti_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/04/23-00:39:01.837 8404 Recovering log #467
+2026/04/23-00:39:01.839 8404 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\carturesti_profile\Default\EdgeCoupons/coupons_data.db/000467.log 
+2026/04/23-00:39:01.983 67e4 Level-0 table #471: started
+2026/04/23-00:39:01.990 67e4 Level-0 table #471: 682224 bytes OK
+2026/04/23-00:39:01.994 67e4 Delete type=0 #467

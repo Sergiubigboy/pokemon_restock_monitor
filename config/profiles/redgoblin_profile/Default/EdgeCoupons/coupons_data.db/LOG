@@ -1,11 +1,9 @@
-2026/04/21-21:38:19.076 3bd8 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/04/21-21:38:19.077 3bd8 Recovering log #318
-2026/04/21-21:38:19.078 3bd8 Level-0 table #320: started
-2026/04/21-21:38:19.087 3bd8 Level-0 table #320: 682224 bytes OK
-2026/04/21-21:38:19.087 3bd8 Recovering log #319
-2026/04/21-21:38:19.088 3bd8 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\EdgeCoupons/coupons_data.db/000319.log 
-2026/04/21-21:38:19.091 3bd8 Delete type=0 #318
-2026/04/21-21:38:19.091 3410 Compacting 7@0 + 1@1 files
-2026/04/21-21:38:19.096 3410 Level-0 table #323: started
-2026/04/21-21:38:19.104 3410 Level-0 table #323: 682224 bytes OK
-2026/04/21-21:38:19.105 3410 compacted to: files[ 7 1 1 0 0 0 0 ]
+2026/04/23-00:45:00.111 99f8 Reusing MANIFEST C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/04/23-00:45:00.112 99f8 Recovering log #599
+2026/04/23-00:45:00.115 99f8 Level-0 table #602: started
+2026/04/23-00:45:00.124 99f8 Level-0 table #602: 682224 bytes OK
+2026/04/23-00:45:00.124 99f8 Recovering log #601
+2026/04/23-00:45:00.124 99f8 Reusing old log C:\Users\Sergiu\Work\Codes\Python\projects\pokemon_restock_monitor\config\profiles\redgoblin_profile\Default\EdgeCoupons/coupons_data.db/000601.log 
+2026/04/23-00:45:00.127 99f8 Delete type=0 #599
+2026/04/23-00:45:00.128 2ac0 Compacting 4@0 + 1@1 files
+2026/04/23-00:45:00.136 2ac0 compacted to: files[ 4 1 1 0 0 0 0 ]

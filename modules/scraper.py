@@ -8,8 +8,11 @@ def check_search_page_stock(site_config: dict) -> list:
     name = site_config.get("name")
     card_selector = site_config.get("card_selector", ".product-item")
     title_selector = site_config.get("title_selector", ".product-item-name")
-    price_selector = site_config.get("price_selector", ".price") # <--- NOU
+    price_selector = site_config.get("price_selector", ".price")
     in_stock_text = site_config.get("in_stock_text", "").lower()
+    
+    # --- NOU: Citim setarea de headless. Dacă nu există, default e True ---
+    is_headless = site_config.get("headless", True) 
     
     profile_folder = site_config.get("profile_folder", "default_profile")
     user_data_dir = os.path.join(os.getcwd(), "config", "profiles", profile_folder)
@@ -23,7 +26,7 @@ def check_search_page_stock(site_config: dict) -> list:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=user_data_dir,
                 channel="msedge", 
-                headless=True, 
+                headless=is_headless, # <--- Aici aplicăm setarea dinamică
                 viewport={"width": 1280, "height": 720},
                 args=["--disable-blink-features=AutomationControlled", "--disable-infobars", "--window-position=-3000,0"]
             )
