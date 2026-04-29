@@ -2,6 +2,7 @@ import json
 import sys
 import time
 import argparse
+import logging
 from modules.scraper import check_search_page_stock
 from modules.notifier import send_telegram_notification
 from modules.state_manager import (
@@ -13,10 +14,20 @@ from modules.state_manager import (
 from modules.bot_controller import start_bot_thread, monitor_state, alert_site_failure
 
 # ─────────────────────────────────────────────────────────────────
+#  CONFIGURARE LOGGING
+# ─────────────────────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("bot.log", encoding='utf-8'),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+
+# ─────────────────────────────────────────────────────────────────
 #  CONFIGURARE
 # ─────────────────────────────────────────────────────────────────
-# DEBUG_MODE e acum controlat din bot via /debug (monitor_state.debug_mode)
-# CHECK_INTERVAL e acum controlat din bot via /interval (monitor_state.check_interval)
 TURBO_INTERVAL = 1   # secunde interval turbo — fix
 
 # ─────────────────────────────────────────────────────────────────
@@ -30,13 +41,9 @@ def load_json_list(filepath):
         return []
 
 # ─────────────────────────────────────────────────────────────────
-#  VIP matching — noul format cu keywords[] + message
+#  VIP matching
 # ─────────────────────────────────────────────────────────────────
 def match_vip(product_name_lower: str, vip_groups: list) -> tuple[bool, str | None]:
-    """
-    Returnează (is_vip, vip_message).
-    vip_message este None dacă produsul nu e VIP.
-    """
     for group in vip_groups:
         keywords = group.get("keywords", [])
         message  = group.get("message", None)
@@ -55,22 +62,22 @@ def main():
 
     if args.turbo:
         monitor_state.set_turbo(True)
-        print("⚡ Pornit în TURBO MODE!")
+        logging.info("⚡ Pornit în TURBO MODE!")
 
-    print("\n" + "="*54)
-    print("  🔥 POKEMON STOCK MONITOR V4.0 - TURBO & BOT CONTROL 🔥")
-    print("="*54 + "\n")
+    logging.info("\n" + "="*54)
+    logging.info("  🔥 POKEMON STOCK MONITOR V4.0 - TURBO & BOT CONTROL 🔥")
+    logging.info("="*54 + "\n")
 
     # --- Pornire bot Telegram în fundal ---
     start_bot_thread()
 
-    # --- Încărcăm starea persistentă de pe disk (pentru mesajul de start) ---
+    # --- Încărcăm starea persistentă de pe disk ---
     initial = load_known_products()
     if initial:
         total = sum(len(v) for v in initial.values())
-        print(f"📂 Context încărcat din JSON: {total} produse cunoscute din {len(initial)} magazine.\n")
+        logging.info(f"📂 Context încărcat din JSON: {total} produse cunoscute din {len(initial)} magazine.\n")
     else:
-        print("📂 Nu există context anterior. Prima rulare — toate produsele găsite vor fi notificate.\n")
+        logging.info("📂 Nu există context anterior. Prima rulare — toate produsele găsite vor fi notificate.\n")
 
     # ─────────────────────────────────────────────────────────────
     #  Loop principal
@@ -79,15 +86,12 @@ def main():
         try:
             # ── Verificare pauză ──────────────────────────────────
             if monitor_state.paused:
-                print("⏸ [PAUZĂ] Monitorul e pe pauză. Aștept...")
+                logging.info("⏸ [PAUZĂ] Monitorul e pe pauză. Aștept...")
                 time.sleep(5)
                 continue
 
-            # ── REÎNCĂRCĂM known_products din JSON la fiecare ciclu ──
-            # Astfel editările manuale ale fişierului sunt preluate imediat
+            # ── REÎNCĂRCĂM CONFIGURILE LA FIECARE CICLU ──
             known_products = load_known_products()
-
-            # ── Reîncărcăm config-urile la fiecare ciclu ─────────
             sites              = load_json_list("config/sites_config.json")
             vip_groups         = load_json_list("config/vip_keywords.json")
             blacklist_keywords = load_json_list("config/blacklist_keywords.json")
@@ -95,26 +99,25 @@ def main():
             scan_start = time.time()
 
             for site in sites:
-                # Re-check pauză şi mute între site-uri
                 if monitor_state.paused:
                     break
 
-                site_name      = site["name"]
+                site_name = site["name"]
 
                 # ── Sărim site-urile cu mute activ ──
                 if monitor_state.is_muted(site_name):
-                    print(f"🔇 [{site_name}] MUTED — sărit.")
+                    logging.info(f"🔇 [{site_name}] MUTED — sărit.")
                     continue
 
                 found_products = check_search_page_stock(site)
 
-                # ── Inităm site-ul dacă e prima dată când apare (fără silent start) ──
+                # ── Inităm site-ul dacă e prima dată când apare ──
                 if site_name not in known_products:
                     known_products[site_name] = set()
 
                 # ── Procesăm produsele găsite ─────────────────────
                 valid_count       = 0
-                current_valid_names = set()  # toate produsele valide din scanarea curentă
+                current_valid_names = set()
 
                 for p in found_products:
                     p_name       = p["name"]
@@ -135,7 +138,7 @@ def main():
                     # Trimite notificare dacă e produs NOU (sau DEBUG)
                     if monitor_state.debug_mode or (p_name_lower not in known_products[site_name]):
                         status = "💎 [VIP]" if is_vip else "✨ [NOU]"
-                        print(f"{status} {site_name} -> {p_name} ({p_price})")
+                        logging.info(f"{status} {site_name} -> {p_name} ({p_price})")
 
                         send_telegram_notification(
                             p_name, p_url, p_price, site_name,
@@ -148,17 +151,16 @@ def main():
                         time.sleep(1.5)
 
                 # ── Eliminăm produsele dispărute din JSON ─────────────────
-                # Nu şter gem dacă scraperul n-a returnat nimic (timeout/eroare)
                 if found_products:
                     remove_stale_products(known_products, site_name, current_valid_names)
                     monitor_state.record_site_ok(site_name, valid_count)
                 else:
                     consec = monitor_state.record_site_fail(site_name)
                     monitor_state.record_error(f"{site_name}: scraper returnat 0 produse", site_name)
-                    print(f"⚠️ [{site_name}] Scraper a returnat 0 produse — JSON păstrat neschimbat. (eșec #{consec})")
+                    logging.warning(f"⚠️ [{site_name}] Scraper a returnat 0 produse — JSON păstrat neschimbat. (eșec #{consec})")
                     alert_site_failure(site_name, consec)
 
-                print(f"📊 [{site_name}] Scanare completă: {valid_count} produse valide.")
+                logging.info(f"📊 [{site_name}] Scanare completă: {valid_count} produse valide.")
 
             # ── Actualizăm statistici bot ──────────────────────────
             monitor_state.record_scan()
@@ -167,19 +169,19 @@ def main():
             # ── Interval de aşteptare (normal sau turbo) ───────────────
             if monitor_state.turbo_mode:
                 interval = TURBO_INTERVAL
-                print(f"\n⚡ [TURBO] Scanare completă în {scan_elapsed:.1f}s. Reiau în {interval}s...")
+                logging.info(f"⚡ [TURBO] Scanare completă în {scan_elapsed:.1f}s. Reiau în {interval}s...")
             else:
                 interval = monitor_state.check_interval
-                print(f"\n⏳ Pauză {interval}s ({interval//60}m {interval%60}s)...")
+                logging.info(f"⏳ Pauză {interval}s ({interval//60}m {interval%60}s)...")
 
             time.sleep(interval)
 
         except KeyboardInterrupt:
-            print("\n🛑 Monitor oprit manual. La revedere!")
+            logging.info("🛑 Monitor oprit manual. La revedere!")
             break
         except Exception as e:
             err_msg = str(e)
-            print(f"❌ Eroare critică: {err_msg}")
+            logging.critical(f"❌ Eroare critică în bucla principală: {err_msg}", exc_info=True)
             monitor_state.record_error(f"CRITIC: {err_msg}")
             time.sleep(60)
 

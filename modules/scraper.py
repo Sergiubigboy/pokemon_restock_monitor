@@ -1,7 +1,8 @@
 import os
-import random
 import time
-from playwright.sync_api import sync_playwright
+import logging
+from urllib.parse import urlparse
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
 def check_search_page_stock(site_config: dict) -> list:
     url = site_config.get("url")
@@ -12,7 +13,7 @@ def check_search_page_stock(site_config: dict) -> list:
     image_selector = site_config.get("image_selector", "img")
     in_stock_text = site_config.get("in_stock_text", "").lower()
     
-    # --- NOU: Citim setarea de headless. Dacă nu există, default e True ---
+    # --- Citim setarea de headless. Dacă nu există, default e True ---
     is_headless = site_config.get("headless", True) 
     
     profile_folder = site_config.get("profile_folder", "default_profile")
@@ -20,9 +21,10 @@ def check_search_page_stock(site_config: dict) -> list:
 
     available_products = []
 
-    print(f"🔍 Scanam: {name}...")
+    logging.info(f"🔍 Scanam: {name}...")
 
     with sync_playwright() as p:
+        context = None
         try:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=user_data_dir,
@@ -36,14 +38,15 @@ def check_search_page_stock(site_config: dict) -> list:
             page.goto(url, wait_until="domcontentloaded", timeout=30000)
             
             try:
-                page.wait_for_selector(card_selector, timeout=15000)
-            except Exception:
-                print(f"⚠️ EROARE la {name}: Timpul a expirat (15 sec).")
+                # Am crescut timeout-ul la 30s pentru site-urile mai lente / React
+                page.wait_for_selector(card_selector, timeout=30000)
+            except PlaywrightTimeoutError:
+                logging.warning(f"⚠️ EROARE la {name}: Timpul a expirat (30 sec). Posibil stoc 0 sau pagină lentă.")
                 return []
             
             page.wait_for_timeout(2000)
             product_cards = page.locator(card_selector).all()
-            print(f"  -> Debug: Extras {len(product_cards)} carduri din HTML.")
+            logging.debug(f"Extras {len(product_cards)} carduri din HTML pentru {name}.")
 
             for card in product_cards:
                 text_card = card.text_content() or ""
@@ -53,7 +56,7 @@ def check_search_page_stock(site_config: dict) -> list:
                     title_el = card.locator(title_selector).first
                     p_name = title_el.text_content().strip() if title_el else "Necunoscut"
                     
-                    # --- NOU: Extragem PREȚUL ---
+                    # --- Extragem PREȚUL ---
                     price_el = card.locator(price_selector).first
                     p_price = price_el.text_content().strip() if price_el else "N/A"
                     p_price = " ".join(p_price.split()) # Curățăm textul de spații aiurea
@@ -61,8 +64,8 @@ def check_search_page_stock(site_config: dict) -> list:
                     link_el = card.locator("a").first
                     p_link = link_el.get_attribute("href") if link_el else url
                     
+                    # Reparăm link-urile relative (ex: Europosters, Smyk)
                     if p_link and p_link.startswith("/"):
-                        from urllib.parse import urlparse
                         parsed = urlparse(url)
                         base_domain = f"{parsed.scheme}://{parsed.netloc}"
                         p_link = base_domain + p_link
@@ -77,12 +80,14 @@ def check_search_page_stock(site_config: dict) -> list:
                         "name": p_name,
                         "url": p_link,
                         "image": p_img,
-                        "price": p_price # <--- Adăugat aici
+                        "price": p_price
                     })
 
         except Exception as e:
-            print(f"⚠️ Eroare generală la {name}: {e}")
+            logging.error(f"⚠️ Eroare generală la {name}: {e}")
         finally:
-            if 'context' in locals(): context.close()
+            # --- CURĂȚAREA MEMORIEI (OBLIGATORIU PENTRU LINUX) ---
+            if context: 
+                context.close()
 
     return available_products

@@ -1,0 +1,11 @@
+2026-04-29 21:01:52,568 - INFO - 
+======================================================
+2026-04-29 21:01:52,568 - INFO -   🔥 POKEMON STOCK MONITOR V4.0 - TURBO & BOT CONTROL 🔥
+2026-04-29 21:01:52,569 - INFO - ======================================================
+
+2026-04-29 21:01:52,570 - INFO - 📂 Context încărcat din JSON: 26 produse cunoscute din 11 magazine.
+
+2026-04-29 21:01:52,577 - INFO - 🔍 Scanam: Pokemon TCG - Noriel...
+2026-04-29 21:02:02,930 - INFO - 📊 [Pokemon TCG - Noriel] Scanare completă: 0 produse valide.
+2026-04-29 21:02:02,930 - INFO - 🔍 Scanam: Pokemon In Stoc - Redgoblin...
+2026-04-29 21:02:05,733 - ERROR - ⚠️ Eroare generală la Pokemon In Stoc - Redgoblin: Page.wait_for_timeout: Target page, context or browser has been closed
