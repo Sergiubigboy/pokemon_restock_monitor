@@ -9,6 +9,7 @@ def check_search_page_stock(site_config: dict) -> list:
     card_selector = site_config.get("card_selector", ".product-item")
     title_selector = site_config.get("title_selector", ".product-item-name")
     price_selector = site_config.get("price_selector", ".price")
+    image_selector = site_config.get("image_selector", "img")
     in_stock_text = site_config.get("in_stock_text", "").lower()
     
     # --- NOU: Citim setarea de headless. Dacă nu există, default e True ---
@@ -66,7 +67,7 @@ def check_search_page_stock(site_config: dict) -> list:
                         base_domain = f"{parsed.scheme}://{parsed.netloc}"
                         p_link = base_domain + p_link
                         
-                    img_el = card.locator("img").first
+                    img_el = card.locator(image_selector).first
                     p_img = img_el.get_attribute("src") if img_el else None
                     
                     if p_img and p_img.startswith("//"):

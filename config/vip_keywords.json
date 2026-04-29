@@ -1,10 +1,30 @@
 [
-    "151",
-    "charizard",
-    "evolving skies",
-    "crown zenith",
-    "elite trainer box",
-    "Ascended",
-    "Prismatic",
-    "Destined Rivals"
+  {
+    "keywords": ["151", "charizard"],
+    "message": "🔥 Card de top în stoc! Ia-l ACUM înainte să se termine!"
+  },
+  {
+    "keywords": ["evolving skies"],
+    "message": "🌌 Evolving Skies disponibil! Unul din cele mai căutate seturi!"
+  },
+  {
+    "keywords": ["crown zenith"],
+    "message": "👑 Crown Zenith în stoc! Grăbește-te!"
+  },
+  {
+    "keywords": ["elite trainer box", "etb"],
+    "message": "🎁 Elite Trainer Box în stoc — ia-l repede!"
+  },
+  {
+    "keywords": ["ascended", "Heros"],
+    "message": "💎 ASCENDED PE STOC REPEDE!!!!"
+  },
+  {
+    "keywords": ["prismatic"],
+    "message": "✨ Prismatic în stoc! Nu rata ocazia!"  
+  },
+  {
+    "keywords": ["destined rivals"],
+    "message": "⚔️ Destined Rivals a apărut în stoc!"
+  }
 ]
