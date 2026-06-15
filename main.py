@@ -1,4 +1,5 @@
 import json
+from random import random
 import sys
 import time
 import argparse
@@ -55,6 +56,8 @@ def match_vip(product_name_lower: str, vip_groups: list) -> tuple[bool, str | No
 #  Main loop
 # ─────────────────────────────────────────────────────────────────
 def main():
+    sleep_time = random.uniform(2.1, 4.5)
+    time.sleep(sleep_time)
     # --- Argumente CLI ---
     parser = argparse.ArgumentParser(description="Pokemon Restock Monitor")
     parser.add_argument("--turbo", action="store_true", help="Porneste in Turbo Mode (interval 1s)")
