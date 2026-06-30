@@ -10,10 +10,17 @@ load_dotenv(dotenv_path="config/.env")
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ADMIN_ID = os.getenv("TELEGRAM_CHAT_ID_ADMIN", "").strip()
+if not ADMIN_ID:
+    # Fallback to old var just in case
+    ADMIN_ID = os.getenv("TELEGRAM_CHAT_ID", "").split(",")[0].strip()
+
 VIP_IDS_RAW = os.getenv("TELEGRAM_CHAT_ID_VIP", "")
 VIP_IDS = [id.strip() for id in VIP_IDS_RAW.split(",") if id.strip()]
 CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID", "").strip()
-ALLOWED_CHAT_IDS = set([ADMIN_ID] + VIP_IDS) if ADMIN_ID else set()
+
+ALLOWED_CHAT_IDS = set(VIP_IDS)
+if ADMIN_ID:
+    ALLOWED_CHAT_IDS.add(ADMIN_ID)
 # ─────────────────────────────────────────────────────────────────
 #  Stare partajată cu main loop — toate operațiile sunt thread-safe
 # ─────────────────────────────────────────────────────────────────

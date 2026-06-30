@@ -28,7 +28,7 @@ def check_search_page_stock(site_config: dict) -> list:
         try:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=user_data_dir,
-                channel="msedge", 
+                #channel="msedge", 
                 headless=is_headless, # <--- Aici aplicăm setarea dinamică
                 viewport={"width": 1280, "height": 720},
                 args=["--disable-blink-features=AutomationControlled", "--disable-infobars", "--window-position=-3000,0"]
