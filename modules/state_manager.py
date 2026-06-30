@@ -1,8 +1,56 @@
 import json
 import os
+import time
 
 KNOWN_PRODUCTS_FILE = os.path.join("config", "known_products.json")
 MUTED_SITES_FILE    = os.path.join("config", "muted_sites.json")
+HISTORICAL_PRODUCTS_FILE = os.path.join("config", "historical_products.json")
+
+def load_historical_products() -> dict:
+    try:
+        with open(HISTORICAL_PRODUCTS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_historical_products(data: dict):
+    try:
+        with open(HISTORICAL_PRODUCTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"⚠️ [StateManager] Nu am putut salva historical_products: {e}")
+
+def log_product_appearance(site_name: str, product_name: str):
+    data = load_historical_products()
+    if site_name not in data:
+        data[site_name] = []
+    
+    for item in data[site_name]:
+        if item['name'] == product_name and item['disappeared_at'] is None:
+            return
+            
+    data[site_name].append({
+        "name": product_name,
+        "appeared_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "disappeared_at": None
+    })
+    save_historical_products(data)
+
+def log_product_disappearance(site_name: str, product_names: set):
+    data = load_historical_products()
+    if site_name not in data:
+        return
+        
+    changed = False
+    for p in product_names:
+        for item in data[site_name]:
+            if item['name'] == p and item['disappeared_at'] is None:
+                item['disappeared_at'] = time.strftime("%Y-%m-%d %H:%M:%S")
+                changed = True
+                break
+                
+    if changed:
+        save_historical_products(data)
 
 def load_known_products() -> dict:
     """
@@ -35,6 +83,7 @@ def add_product(known_products: dict, site_name: str, product_name_lower: str):
         known_products[site_name] = set()
     known_products[site_name].add(product_name_lower)
     save_known_products(known_products)
+    log_product_appearance(site_name, product_name_lower)
 
 def remove_stale_products(known_products: dict, site_name: str, current_valid_names: set):
     """
@@ -48,6 +97,7 @@ def remove_stale_products(known_products: dict, site_name: str, current_valid_na
     if stale:
         known_products[site_name] = known_products[site_name] & current_valid_names
         save_known_products(known_products)
+        log_product_disappearance(site_name, stale)
         print(f"🗑️  [{site_name}] Produse scoase din JSON (dispărute): {len(stale)}")
         for p in stale:
             print(f"   - {p}")

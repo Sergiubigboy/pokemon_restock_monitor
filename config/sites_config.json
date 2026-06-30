@@ -31,16 +31,6 @@
         "profile_folder": "smyk_profile"
     },
     {
-        "name": "Pokemon TCG - Cărturești",
-        "url": "https://carturesti.ro/product/search/pokemon%C2%A0tcg",
-        "type": "search_page",
-        "card_selector": "prod-grid-box",
-        "title_selector": ".md-title",
-        "price_selector": ".suma",
-        "in_stock_text": "în stoc",
-        "profile_folder": "carturesti_profile"
-    },
-    {
         "name": "Pokemon TCG - Krit",
         "url": "https://krit.ro/categorie/pokemon?page=1&sort=new&filters=filterAvailability_In%20Stoc",
         "type": "search_page",
@@ -80,16 +70,6 @@
         "price_selector": ".product__info--price-gross",
         "in_stock_text": "",
         "profile_folder": "pokemania_profile"
-    },
-    {
-        "name": "Pokemon TCG - Europosters",
-        "url": "https://www.europosters.ro/search/?q=pokemon+tcg&f[idt]=merchandise#catalog-filter",
-        "type": "search_page",
-        "card_selector": ".product-thumb",
-        "title_selector": ".product-name",
-        "price_selector": ".price",
-        "in_stock_text": "pe stoc",
-        "profile_folder": "europosters_profile"
     },
     {
         "name": "Pokemon TCG - Bebe Tei",

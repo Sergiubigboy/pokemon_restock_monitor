@@ -1,5 +1,5 @@
 import json
-from random import random
+import random
 import sys
 import time
 import argparse
@@ -139,16 +139,28 @@ def main():
                     current_valid_names.add(p_name_lower)
 
                     # Trimite notificare dacă e produs NOU (sau DEBUG)
-                    if monitor_state.debug_mode or (p_name_lower not in known_products[site_name]):
+                    debug_trigger = monitor_state.debug_mode or monitor_state.debug_mode_all
+                    if debug_trigger or (p_name_lower not in known_products[site_name]):
                         status = "💎 [VIP]" if is_vip else "✨ [NOU]"
                         logging.info(f"{status} {site_name} -> {p_name} ({p_price})")
 
+                        if monitor_state.debug_mode_all and (p_name_lower in known_products[site_name]):
+                            debug_target = 'all'
+                        elif monitor_state.debug_mode and (p_name_lower in known_products[site_name]):
+                            debug_target = 'admin'
+                        else:
+                            debug_target = None
+                            
+                        delay_seconds = monitor_state.delay_seconds if monitor_state.delay_mode else 0
+
                         send_telegram_notification(
                             p_name, p_url, p_price, site_name,
-                            p_img, is_vip, vip_message
+                            p_img, is_vip, vip_message,
+                            debug_target=debug_target,
+                            delay_seconds=delay_seconds
                         )
 
-                        if not monitor_state.debug_mode:
+                        if not debug_trigger:
                             add_product(known_products, site_name, p_name_lower)
 
                         time.sleep(1.5)

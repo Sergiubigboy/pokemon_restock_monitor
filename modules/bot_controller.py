@@ -9,9 +9,11 @@ from modules.state_manager import load_muted_sites, save_muted_sites
 load_dotenv(dotenv_path="config/.env")
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_IDS_RAW       = os.getenv("TELEGRAM_CHAT_ID", "")
-ALLOWED_CHAT_IDS   = set(id.strip() for id in CHAT_IDS_RAW.split(",") if id.strip())
-
+ADMIN_ID = os.getenv("TELEGRAM_CHAT_ID_ADMIN", "").strip()
+VIP_IDS_RAW = os.getenv("TELEGRAM_CHAT_ID_VIP", "")
+VIP_IDS = [id.strip() for id in VIP_IDS_RAW.split(",") if id.strip()]
+CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID", "").strip()
+ALLOWED_CHAT_IDS = set([ADMIN_ID] + VIP_IDS) if ADMIN_ID else set()
 # ─────────────────────────────────────────────────────────────────
 #  Stare partajată cu main loop — toate operațiile sunt thread-safe
 # ─────────────────────────────────────────────────────────────────
@@ -21,7 +23,10 @@ class MonitorState:
         self.turbo_mode     = False
         self.paused         = False
         self.debug_mode     = False
-        self.check_interval = 300          # secunde — modificabil via /interval
+        self.debug_mode_all = False
+        self.delay_mode     = False
+        self.delay_seconds  = 40
+        self.check_interval = 3         # secunde — modificabil via /interval
         self.last_scan      = "Niciodată"
         self.scan_count     = 0
         self.start_time     = time.time()
@@ -50,6 +55,20 @@ class MonitorState:
     def get_interval(self) -> int:
         with self._lock:
             return self.check_interval
+
+    def toggle_debug_all(self) -> bool:
+        with self._lock:
+            self.debug_mode_all = not self.debug_mode_all
+            return self.debug_mode_all
+            
+    def toggle_delay_mode(self) -> bool:
+        with self._lock:
+            self.delay_mode = not self.delay_mode
+            return self.delay_mode
+            
+    def set_delay_seconds(self, sec: int):
+        with self._lock:
+            self.delay_seconds = sec
 
     # ── Statistici scanare ─────────────────────────────────────
     def record_scan(self):
@@ -121,13 +140,15 @@ class MonitorState:
 
         mode_str    = "⚡ TURBO (1s)" if turbo else f"🐢 Normal ({iv}s)"
         state_str   = "⏸ PAUZĂ" if paused else "▶️ Activ"
-        debug_str   = "🔍 ON" if debug else "OFF"
+        debug_str   = "🔍 ON (ADMIN)" if debug else ("🔍 ON (ALL)" if self.debug_mode_all else "OFF")
+        delay_str   = f"⏱ ON ({self.delay_seconds}s)" if self.delay_mode else "OFF"
 
         lines = [
             "📊 <b>Status Monitor</b>\n",
             f"📡 <b>Stare:</b>    {state_str}",
             f"🔄 <b>Mod:</b>      {mode_str}",
             f"🔍 <b>Debug:</b>    {debug_str}",
+            f"⏳ <b>Delay Ch:</b>  {delay_str}",
             f"🕐 <b>Uptime:</b>   {h:02d}:{m:02d}:{s:02d}",
             f"🔢 <b>Scanări:</b>  {scans}",
             f"⏱ <b>Ultima:</b>   {last}",
@@ -231,10 +252,14 @@ HELP_TEXT = (
     "<b>── Control ──</b>\n"
     "⚡ /turbo — Turbo Mode (interval 1s)\n"
     "🐢 /normal — Mod normal (5 min)\n"
-    "⏸ /pause — Pauză scanare\n"
-    "▶️ /resume — Reia scanarea\n"
-    "🔍 /debug — Toggle debug mode\n"
-    "⏱ /interval &lt;sec&gt; — Seteaza intervalul (ex: /interval 60)\n\n"
+    "⏸ /pause — Pauză scanare (Admin)\n"
+    "▶️ /resume — Reia scanarea (Admin)\n"
+    "🔍 /debug — Toggle debug admin (Admin)\n"
+    "🔍 /debugall — Toggle debug toți (Admin)\n"
+    "⏱ /interval &lt;sec&gt; — Seteaza intervalul (Admin)\n"
+    "⏱ /delay — Toggle delay pentru canal (Admin)\n"
+    "⏱ /setdelay &lt;sec&gt; — Setare delay (Admin)\n"
+    "📢 /say &lt;msg&gt; — Trimite mesaj pe canal (Admin)\n\n"
     "<b>── Info ──</b>\n"
     "📊 /status — Starea curentă\n"
     "❌ /errors — Ultimele erori\n"
@@ -254,6 +279,15 @@ def _handle_command(chat_id: str, text: str):
     parts = text.strip().split(None, 1)
     cmd   = parts[0].lower().split("@")[0]
     arg   = parts[1].strip() if len(parts) > 1 else ""
+
+    is_admin = (chat_id == ADMIN_ID)
+    
+    # VIP commands allowed
+    vip_cmds = {"/turbo", "/normal", "/status", "/stats", "/help", "/start"}
+    
+    if not is_admin and cmd not in vip_cmds:
+        _send_message(chat_id, "🔒 Nu ai permisiunea pentru această comandă.")
+        return
 
     # ── Control ───────────────────────────────────────────────
     if cmd == "/turbo":
@@ -290,9 +324,39 @@ def _handle_command(chat_id: str, text: str):
         if active:
             _send_message(chat_id,
                 "🔍 <b>DEBUG MODE ON</b>\n"
-                "Toate produsele valide vor fi retrimise pe Telegram la fiecare scan.")
+                "Toate produsele valide vor fi retrimise către Admin.")
         else:
-            _send_message(chat_id, "🔍 <b>Debug MODE OFF.</b> Revenire la mod normal.")
+            _send_message(chat_id, "🔍 <b>Debug MODE OFF.</b>")
+
+    elif cmd == "/debugall":
+        active = monitor_state.toggle_debug_all()
+        if active:
+            _send_message(chat_id, "🔍 <b>DEBUG ALL ON</b>\nToate produsele se trimit către toți.")
+        else:
+            _send_message(chat_id, "🔍 <b>Debug ALL OFF.</b>")
+
+    elif cmd == "/delay":
+        active = monitor_state.toggle_delay_mode()
+        state = "ACTIVAT" if active else "DEZACTIVAT"
+        _send_message(chat_id, f"⏱ <b>Mod Delay {state}</b> pentru Canal.")
+
+    elif cmd == "/setdelay":
+        if not arg or not arg.isdigit():
+            _send_message(chat_id, "⚠️ Sintaxă: /setdelay <secunde>")
+            return
+        secs = int(arg)
+        monitor_state.set_delay_seconds(secs)
+        _send_message(chat_id, f"⏱ <b>Delay setat la {secs} secunde.</b>")
+
+    elif cmd == "/say":
+        if not arg:
+            _send_message(chat_id, "⚠️ Sintaxă: /say <mesaj>")
+            return
+        if CHANNEL_ID:
+            _send_message(CHANNEL_ID, arg)
+            _send_message(chat_id, "✅ Mesaj trimis pe canal.")
+        else:
+            _send_message(chat_id, "⚠️ Canalul nu e configurat.")
 
     elif cmd == "/interval":
         if not arg or not arg.isdigit():
@@ -435,11 +499,12 @@ def start_bot_thread():
     # Mesaj de startup după 2s (să dăm timp botului să se conecteze)
     def _startup_msg():
         time.sleep(2)
-        _broadcast(
-            "🟢 <b>Pokemon Monitor PORNIT!</b>\n\n"
-            "Monitorul a pornit și scanează acum.\n"
-            "Scrie /help pentru lista de comenzi, /status pentru starea curentă."
-        )
+        if ADMIN_ID:
+            _send_message(ADMIN_ID,
+                "🟢 <b>Pokemon Monitor PORNIT!</b>\n\n"
+                "Monitorul a pornit și scanează acum.\n"
+                "Scrie /help pentru lista de comenzi, /status pentru starea curentă."
+            )
     threading.Thread(target=_startup_msg, daemon=True).start()
 
     return t
