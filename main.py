@@ -184,12 +184,18 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
             # Un set bun (tier S) declanșează pe TOATE tipurile urmărite —
             # ETB, booster box, UPC — nu alegi produs cu produs.
             decizie_politica = policy.decide(verdict, nisa) if verdict else None
+            motiv_filtrare = ""
 
+            # In DEBUG vrei sa vezi TOT, inclusiv ce ar fi fost filtrat —
+            # altfel comanda /debug nu-ti arata nimic, ca filtrul taie inainte
+            # sa apuce sa trimita. Motivul filtrarii merge in mesaj, ca sa poti
+            # judeca daca regula e corecta.
             if decizie_politica is not None and decizie_politica.actiune == "TACERE":
                 logging.info(f"🔕 [{site_name}] {decizie_politica.motiv}: {p_name}")
                 if not debug_trigger:
                     add_product(known_products, site_name, p_name_lower)
-                continue
+                    continue
+                motiv_filtrare = decizie_politica.motiv
 
             if monitor_state.debug_mode_all and (p_name_lower in known_products[site_name]):
                 debug_target = 'all'
@@ -267,9 +273,15 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
                         status = "💎 [VIP]" if is_vip else "✨ [NOU]"
                     logging.info(f"{status} {site_name} -> {p_name} ({p_price})")
 
+                    mesaj_vip = vip_message
+                    if motiv_filtrare:
+                        # In debug: spune de ce ar fi fost filtrat in mod normal.
+                        mesaj_vip = f"🔕 FILTRAT NORMAL: {motiv_filtrare}"
+                        is_vip = True
+
                     send_telegram_notification(
                         p_name, p_url, p_price, site_name,
-                        p_img, is_vip, vip_message,
+                        p_img, is_vip, mesaj_vip,
                         debug_target=debug_target,
                         delay_seconds=delay_seconds,
                         id_canonic=id_canonic

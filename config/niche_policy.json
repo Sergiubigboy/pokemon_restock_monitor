@@ -10,7 +10,8 @@
       "upc",
       "booster_box",
       "booster_bundle",
-      "collection_box"
+      "collection_box",
+      "bundle"
     ],
     "ignora": [
       "blister",
@@ -30,7 +31,8 @@
   "One Piece TCG": {
     "urmareste": [
       "booster_box",
-      "booster_bundle"
+      "booster_bundle",
+      "bundle"
     ],
     "ignora": [
       "battle_deck",
@@ -49,7 +51,8 @@
     "urmareste": [
       "booster_box",
       "booster_bundle",
-      "collection_box"
+      "collection_box",
+      "bundle"
     ],
     "ignora": [
       "single_card",
@@ -66,7 +69,8 @@
   "Magic The Gathering": {
     "urmareste": [
       "collector_booster_box",
-      "collection_box"
+      "collection_box",
+      "bundle"
     ],
     "ignora": [
       "play_booster_box",

@@ -12,12 +12,29 @@ _canal_functional = None
 
 
 def _canale_disponibile(site_config: dict) -> list:
-    """Canalele de incercat, in ordine. Primul care porneste castiga."""
+    """
+    Canalele de incercat, in ordine. Primul care porneste castiga.
+
+    Pe Pi (ARM64) Edge nu exista si nu va exista — Microsoft nu-l livreaza
+    pentru arhitectura asta. Ca sa nu ghicim la fiecare pornire, poti forta
+    canalul din config/.env:
+
+        PLAYWRIGHT_CHANNEL=            (gol = Chromium livrat de Playwright)
+        PLAYWRIGHT_CHANNEL=chromium    (Chromium instalat in sistem)
+        PLAYWRIGHT_CHANNEL=msedge      (implicit pe Windows)
+
+    Variabila setata, chiar si goala, opreste orice incercare de fallback.
+    """
     global _canal_functional
-    preferat = site_config.get("browser_channel", "msedge")
+
+    fortat = os.getenv("PLAYWRIGHT_CHANNEL")
+    if fortat is not None:
+        return [fortat.strip() or None]
+
     if _canal_functional is not None:
-        # Deja stim ce merge pe masina asta.
         return [_canal_functional]
+
+    preferat = site_config.get("browser_channel", "msedge")
     return [preferat, "chromium", None]
 
 

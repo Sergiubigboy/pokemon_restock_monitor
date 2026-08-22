@@ -114,12 +114,18 @@ _TIPARE_TIP = [
                          "booster bundle box"]),
     ("booster_bundle",  ["booster bundle", "3 pachete", "set 3 pachete",
                          "triple pack", "3-pack"]),
+    ("bundle",          ["bundle"]),
     ("blister",         ["blister", "checklane"]),
     ("tin",             ["tin", "poke ball tin", "mini tins", "mini tin"]),
     ("battle_deck",     ["battle deck", "league battle", "championship decks",
                          "world champions decks", "starter deck", "theme deck"]),
+    # "Vault" (Riftbound), "Bundle" (MTG), "Collection" simplu (Pokemon
+    # Celebrations) — toate erau clasificate "altul" si taiate tacut, desi
+    # sunt produse sigilate care conteaza. Vazute in log pe 23 august.
     ("collection_box",  ["premium collection", "ex box", "illustration collection",
-                         "booster collection", "special collection", "collection box"]),
+                         "booster collection", "special collection", "collection box",
+                         "vault", "gift bundle", "bundle gift", "collection -",
+                         "collection:", "celebrations collection"]),
     ("accesoriu",       ["sleeve", "binder", "portfolio", "playmat", "album",
                          "deck box", "breloc", "husa"]),
     ("plus",            ["plus ", "plush", "jucarie de plus"]),
