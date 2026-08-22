@@ -101,5 +101,44 @@
     "editii_acceptate": [
       "standard"
     ]
+  },
+  "Disney Lorcana": {
+    "urmareste": [
+      "booster_box",
+      "collection_box",
+      "bundle"
+    ],
+    "ignora": [
+      "single_card",
+      "accesoriu",
+      "battle_deck",
+      "blister",
+      "booster_pack",
+      "play_booster_box"
+    ],
+    "editii_acceptate": [
+      "standard"
+    ],
+    "nota": "Ravensburger a rezolvat problemele de stoc — marja e la produsele cu alocare limitata, nu la displayurile normale."
+  },
+  "Yu-Gi-Oh": {
+    "urmareste": [
+      "booster_box",
+      "collection_box",
+      "bundle"
+    ],
+    "ignora": [
+      "single_card",
+      "accesoriu",
+      "battle_deck",
+      "blister",
+      "booster_pack",
+      "tin",
+      "play_booster_box"
+    ],
+    "editii_acceptate": [
+      "standard"
+    ],
+    "nota": "Doar produsele cu raritati garantate (Rarity Collection, Quarter Century). Konami reimprima masiv seturile de baza."
   }
 }
