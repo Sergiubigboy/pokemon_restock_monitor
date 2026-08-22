@@ -5,6 +5,9 @@ import threading
 import requests
 from dotenv import load_dotenv
 from modules.state_manager import load_muted_sites, save_muted_sites
+from modules.watchlist import alerts_today, load_watchlist, watchlist_is_stale
+from modules.item_stats import raport as item_stats_raport
+from modules import beta, classifier, feedback, policy, price_check
 
 load_dotenv(dotenv_path="config/.env")
 
@@ -34,6 +37,19 @@ class MonitorState:
         self.delay_mode     = False
         self.delay_seconds  = 40
         self.check_interval = 3         # secunde — modificabil via /interval
+        # Evaluarea pe watchlist — pornită/oprită la cald cu /watchlist on|off.
+        # E aditivă: când e ON, produsele de pe watchlist primesc în plus alerta
+        # cu profit și ROI. Nimic din fluxul vechi nu dispare.
+        self.watchlist_enabled = True
+        # Câte nișe se scanează simultan. În interiorul unei nișe magazinele
+        # rămân STRICT pe rând — paralelismul e doar între nișe.
+        # 1 = comportamentul secvențial de dinainte. Crește-l doar dacă
+        # `free -m` pe Pi arată că mai ai RAM liber.
+        self.parallel_niches = 2
+        # Clasificarea produselor. ON implicit — stratul local nu costa
+        # nimic si nu are nevoie de retea. Gemini intervine doar pentru
+        # numele pe care regulile locale nu le pot citi.
+        self.classifier_enabled = True
         self.last_scan      = "Niciodată"
         self.scan_count     = 0
         self.start_time     = time.time()
@@ -77,6 +93,33 @@ class MonitorState:
         with self._lock:
             self.delay_seconds = sec
 
+    # ── Watchlist ──────────────────────────────────────────────
+    def set_watchlist(self, val: bool):
+        with self._lock:
+            self.watchlist_enabled = val
+
+    def is_watchlist_enabled(self) -> bool:
+        with self._lock:
+            return self.watchlist_enabled
+
+    # ── Paralelism pe nișe ─────────────────────────────────────
+    def set_parallel_niches(self, n: int):
+        with self._lock:
+            self.parallel_niches = max(1, min(n, 4))
+
+    def get_parallel_niches(self) -> int:
+        with self._lock:
+            return self.parallel_niches
+
+    # ── Clasificator LLM ───────────────────────────────────────
+    def set_classifier(self, val: bool):
+        with self._lock:
+            self.classifier_enabled = val
+
+    def is_classifier_enabled(self) -> bool:
+        with self._lock:
+            return self.classifier_enabled
+
     # ── Statistici scanare ─────────────────────────────────────
     def record_scan(self):
         with self._lock:
@@ -89,6 +132,11 @@ class MonitorState:
             s["ok"]          += 1
             s["products"]     = product_count
             s["consec_fail"]  = 0
+
+    def get_site_product_count(self, site_name: str) -> int:
+        """Câte produse a întors magazinul la ultima scanare reușită."""
+        with self._lock:
+            return self.site_stats.get(site_name, {}).get("products", 0)
 
     def record_site_fail(self, site_name: str) -> int:
         """Returnează numărul de eșecuri consecutive după înregistrare."""
@@ -144,6 +192,11 @@ class MonitorState:
             last    = self.last_scan
             muted   = len(self.muted_sites)
             errors  = len(self.errors_log)
+            wl_on   = self.watchlist_enabled
+            paralel = self.parallel_niches
+            clf_on  = self.classifier_enabled
+        from modules import beta as _beta
+        beta_on = _beta.e_activ()
 
         mode_str    = "⚡ TURBO (1s)" if turbo else f"🐢 Normal ({iv}s)"
         state_str   = "⏸ PAUZĂ" if paused else "▶️ Activ"
@@ -156,6 +209,10 @@ class MonitorState:
             f"🔄 <b>Mod:</b>      {mode_str}",
             f"🔍 <b>Debug:</b>    {debug_str}",
             f"⏳ <b>Delay Ch:</b>  {delay_str}",
+            f"🎯 <b>Watchlist:</b> {'✅ ON' if wl_on else '⛔ OFF'}",
+            f"🧵 <b>Nișe paralel:</b> {paralel}",
+            f"🧠 <b>Clasificator:</b> {'✅ ON' if clf_on else '⛔ OFF'}",
+            f"🧪 <b>Mod BETA:</b> {'✅ ACTIV' if beta_on else 'oprit'}"
             f"🕐 <b>Uptime:</b>   {h:02d}:{m:02d}:{s:02d}",
             f"🔢 <b>Scanări:</b>  {scans}",
             f"⏱ <b>Ultima:</b>   {last}",
@@ -207,12 +264,17 @@ monitor_state = MonitorState()
 # ─────────────────────────────────────────────────────────────────
 #  Funcții Telegram low-level
 # ─────────────────────────────────────────────────────────────────
+def _token() -> str:
+    """In modul beta, comenzile merg pe botul de test, nu pe cel real."""
+    return beta.token_beta() if beta.e_activ() else TELEGRAM_BOT_TOKEN
+
+
 def _send_message(chat_id: str, text: str):
-    if not TELEGRAM_BOT_TOKEN:
+    if not _token():
         return
     try:
         requests.post(
-            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            f"https://api.telegram.org/bot{_token()}/sendMessage",
             json={"chat_id": chat_id, "text": text, "parse_mode": "HTML",
                   "disable_web_page_preview": True},
             timeout=10
@@ -228,8 +290,8 @@ def _broadcast(text: str):
 def _get_updates(offset: int) -> list:
     try:
         resp = requests.get(
-            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates",
-            params={"offset": offset, "timeout": 30, "allowed_updates": ["message"]},
+            f"https://api.telegram.org/bot{_token()}/getUpdates",
+            params={"offset": offset, "timeout": 30, "allowed_updates": ["message", "callback_query"]},
             timeout=40
         )
         if resp.status_code == 200:
@@ -267,6 +329,17 @@ HELP_TEXT = (
     "⏱ /delay — Toggle delay pentru canal (Admin)\n"
     "⏱ /setdelay &lt;sec&gt; — Setare delay (Admin)\n"
     "📢 /say &lt;msg&gt; — Trimite mesaj pe canal (Admin)\n\n"
+    "<b>── Watchlist ──</b>\n"
+    "🎯 /watchlist — Starea evaluării pe watchlist\n"
+    "🎯 /watchlist on|off — Pornește/oprește evaluarea (Admin)\n"
+    "📉 /performance — Ce item-uri merită slotul\n"
+    "🧵 /parallel &lt;1-4&gt; — Câte nișe scanez simultan (Admin)\n"
+    "🧠 /classifier on|off — Filtrare inteligentă cu AI (Admin)\n"
+    "🎯 /nise — Politica si seturile pe fiecare nisa\n"
+    "📊 /preturi — Registrul de preturi second-hand\n"
+    "🧪 /beta on|off — Ruleaza versiunea de test (Admin)\n"
+    "🗳 /feedback — Verdictele tale Good/Bad\n"
+    "🔓 /unblock &lt;id&gt; — Deblochează un produs (Admin)\n\n"
     "<b>── Info ──</b>\n"
     "📊 /status — Starea curentă\n"
     "❌ /errors — Ultimele erori\n"
@@ -290,7 +363,8 @@ def _handle_command(chat_id: str, text: str):
     is_admin = (chat_id == ADMIN_ID)
     
     # VIP commands allowed
-    vip_cmds = {"/turbo", "/normal", "/status", "/stats", "/help", "/start"}
+    vip_cmds = {"/turbo", "/normal", "/status", "/stats", "/help", "/start",
+                "/watchlist", "/performance", "/feedback", "/classifier", "/nise", "/preturi", "/beta"}
     
     if not is_admin and cmd not in vip_cmds:
         _send_message(chat_id, "🔒 Nu ai permisiunea pentru această comandă.")
@@ -380,6 +454,146 @@ def _handle_command(chat_id: str, text: str):
             f"⏱ <b>Interval setat la {secs}s</b> ({secs//60}m {secs%60}s).\n"
             f"Se aplică din ciclul următor (în mod normal, nu turbo).")
 
+    # ── Watchlist ─────────────────────────────────────────────
+    elif cmd == "/watchlist":
+        optiune = arg.lower().strip()
+
+        if optiune in ("on", "off"):
+            if not is_admin:
+                _send_message(chat_id, "🔒 Doar Adminul poate porni/opri watchlist-ul.")
+                return
+            monitor_state.set_watchlist(optiune == "on")
+            if optiune == "on":
+                _send_message(chat_id,
+                    "🎯 <b>Watchlist ACTIVAT.</b>\n"
+                    "Produsele de pe watchlist primesc în plus alerta cu profit net și ROI.\n"
+                    "Notificările obișnuite continuă neschimbate.")
+            else:
+                _send_message(chat_id,
+                    "⛔ <b>Watchlist DEZACTIVAT.</b>\n"
+                    "Rămâne doar fluxul clasic (VIP + blacklist).")
+            return
+
+        if optiune:
+            _send_message(chat_id, "⚠️ Sintaxă: <code>/watchlist on</code> sau <code>/watchlist off</code>")
+            return
+
+        # Fără argument: raport de stare.
+        wl = load_watchlist()
+        activ = "✅ ON" if monitor_state.is_watchlist_enabled() else "⛔ OFF"
+
+        if not wl:
+            _send_message(chat_id,
+                f"🎯 <b>Watchlist:</b> {activ}\n\n"
+                "⚠️ <b>Fișierul nu s-a putut încărca</b> (lipsă sau JSON invalid).\n"
+                "Monitorul rulează pe fluxul clasic.")
+            return
+
+        items = [i for i in wl.get("items", []) if i.get("enabled")]
+        lines = [
+            f"🎯 <b>Watchlist:</b> {activ}",
+            f"📋 <b>Item-uri active:</b> {len(items)} din {len(wl.get('items', []))}",
+        ]
+
+        eticheta = (wl.get("_meta") or {}).get("week_label")
+        if eticheta:
+            lines.append(f"🗓 <b>Săptămâna:</b> {eticheta}")
+        if watchlist_is_stale(wl):
+            lines.append("\n⚠️ <b>Watchlist EXPIRAT</b> — agentul săptămânal nu a mai rulat.\nPrețurile de revânzare nu mai sunt de încredere.")
+
+        lines.append("\n<b>Alerte trimise azi:</b>")
+        for i in sorted(items, key=lambda x: str(x.get("tier", ""))):
+            trimise = alerts_today(str(i.get("id", "")))
+            lines.append(f"  [{i.get('tier', '?')}] {i.get('label', i.get('id'))} — {trimise}")
+
+        _send_message(chat_id, "\n".join(lines))
+
+    elif cmd == "/performance":
+        _send_message(chat_id, item_stats_raport(load_watchlist()))
+
+    elif cmd == "/parallel":
+        if not arg or not arg.isdigit():
+            actual = monitor_state.get_parallel_niches()
+            _send_message(chat_id,
+                f"🧵 <b>Nișe scanate simultan:</b> {actual}\n\n"
+                "Sintaxă: <code>/parallel 2</code> (între 1 și 4).\n"
+                "Magazinele dintr-o nișă rămân mereu pe rând — "
+                "paralelismul e doar între nișe.")
+            return
+        n = int(arg)
+        monitor_state.set_parallel_niches(n)
+        efectiv = monitor_state.get_parallel_niches()
+        avertisment = ""
+        if efectiv >= 3:
+            avertisment = ("\n\n⚠️ Peste 2 nișe simultan pot rula mai multe instanțe "
+                           "Edge deodată. Verifică <code>free -m</code> pe Pi.")
+        _send_message(chat_id,
+            f"🧵 <b>Scanez {efectiv} nișe simultan.</b>\n"
+            f"Se aplică din ciclul următor.{avertisment}")
+
+    elif cmd == "/classifier":
+        optiune = arg.lower().strip()
+        if optiune in ("on", "off"):
+            if not is_admin:
+                _send_message(chat_id, "🔒 Doar Adminul poate porni/opri clasificatorul.")
+                return
+            monitor_state.set_classifier(optiune == "on")
+            if optiune == "on":
+                _send_message(chat_id,
+                    "🧠 <b>Clasificator ACTIVAT.</b>\n"
+                    "Produsele care nu sunt din categoriile tale (blistere, tin-uri, "
+                    "accesorii) nu mai ajung la tine.")
+            else:
+                _send_message(chat_id, "⛔ <b>Clasificator DEZACTIVAT.</b> Primesti tot ca inainte.")
+            return
+
+        stat = classifier.statistici_cache()
+        activ = "✅ ON" if monitor_state.is_classifier_enabled() else "⛔ OFF"
+        reguli = classifier.incarca_reguli()
+        nise = [k for k in reguli if not k.startswith("_")]
+        _send_message(chat_id,
+            f"🧠 <b>Clasificator:</b> {activ}" + chr(10) +
+            f"📚 <b>Produse in cache:</b> {stat['total']} ({stat['relevante']} relevante)" + chr(10) +
+            f"🏷 <b>Nise configurate:</b> {', '.join(nise) or 'niciuna'}" + chr(10) + chr(10) +
+            "Sintaxa: <code>/classifier on</code> sau <code>/classifier off</code>")
+
+    elif cmd == "/beta":
+        optiune = arg.lower().strip()
+        if optiune in ("on", "off"):
+            if not is_admin:
+                _send_message(chat_id, "🔒 Doar Adminul poate comuta modul beta.")
+                return
+            beta.seteaza(optiune == "on")
+            if optiune == "on" and not beta.token_beta():
+                _send_message(chat_id,
+                    "⚠️ Am pornit modul beta, dar <code>TELEGRAM_BOT_TOKEN_BETA</code> lipseste din config/.env." + chr(10) +
+                    "Vorbeste cu @BotFather, /newbot, si pune tokenul acolo. Pana atunci raman pe botul normal.")
+            else:
+                _send_message(chat_id, beta.raport())
+            return
+        _send_message(chat_id, beta.raport())
+    elif cmd == "/preturi":
+        _send_message(chat_id, price_check.raport())
+
+    elif cmd == "/nise":
+        _send_message(chat_id, policy.raport())
+
+    elif cmd == "/feedback":
+        _send_message(chat_id, feedback.raport())
+
+    elif cmd == "/unblock":
+        if not arg:
+            _send_message(chat_id,
+                "⚠️ Sintaxa: <code>/unblock pitch-black</code>\n"
+                "Deblocheaza toate produsele al caror id contine textul dat.")
+            return
+        deblocate = feedback.deblocheaza(arg)
+        if not deblocate:
+            _send_message(chat_id, f"ℹ️ Niciun produs blocat nu contine '<code>{arg}</code>'.")
+        else:
+            lista = chr(10).join(f"  • <code>{d}</code>" for d in deblocate)
+            _send_message(chat_id, f"🔓 <b>Deblocate {len(deblocate)}:</b>" + chr(10) + lista)
+
     # ── Info ──────────────────────────────────────────────────
     elif cmd == "/status":
         _send_message(chat_id, monitor_state.get_status_text())
@@ -466,12 +680,78 @@ def _handle_command(chat_id: str, text: str):
 # ─────────────────────────────────────────────────────────────────
 #  Loop principal bot (rulează în thread daemon)
 # ─────────────────────────────────────────────────────────────────
-def _bot_loop():
+
+# ─────────────────────────────────────────────────────────────
+#  Apasarea butoanelor Good / Bad de sub notificari
+# ─────────────────────────────────────────────────────────────
+def _raspunde_callback(callback_id: str, text: str):
+    """Telegram cere confirmarea apasarii, altfel butonul ramane in "loading"."""
     if not TELEGRAM_BOT_TOKEN:
+        return
+    try:
+        requests.post(
+            f"https://api.telegram.org/bot{_token()}/answerCallbackQuery",
+            json={"callback_query_id": callback_id, "text": text[:200]},
+            timeout=10,
+        )
+    except Exception as e:
+        print(f"⚠️ [Bot] Nu am putut confirma apasarea: {e}")
+
+
+def _handle_callback(update: dict):
+    """
+    Trateaza apasarea pe Good / Bad.
+
+    callback_data are forma  v:g:<token>  sau  v:b:<token>
+    Tokenul e un hash scurt, pentru ca Telegram limiteaza campul la 64 de
+    octeti, iar id-ul canonic poate fi mai lung.
+    """
+    callback = update.get("callback_query") or {}
+    callback_id = callback.get("id", "")
+    chat_id = str((callback.get("message") or {}).get("chat", {}).get("id", ""))
+    data = callback.get("data", "")
+
+    if chat_id not in ALLOWED_CHAT_IDS:
+        _raspunde_callback(callback_id, "Acces neautorizat.")
+        return
+
+    if not data.startswith("v:"):
+        _raspunde_callback(callback_id, "Buton necunoscut.")
+        return
+
+    bucati = data.split(":", 2)
+    if len(bucati) != 3:
+        _raspunde_callback(callback_id, "Buton invalid.")
+        return
+
+    _, litera, token = bucati
+    verdict = "good" if litera == "g" else "bad"
+    id_canonic = feedback.id_dupa_token(token)
+
+    if not id_canonic:
+        # Se poate intampla daca fisierul de verdicte a fost sters intre timp.
+        _raspunde_callback(callback_id, "Nu mai stiu la ce produs se refera butonul.")
+        return
+
+    feedback.inregistreaza(id_canonic, verdict, chat_id=chat_id)
+
+    if verdict == "bad":
+        mesaj = f"⛔ Blocat: {id_canonic}. Nu mai primesti alerte pentru el, din niciun magazin."
+    else:
+        mesaj = f"✅ Notat ca bun: {id_canonic}."
+
+    _raspunde_callback(callback_id, mesaj)
+    print(f"🗳 [Bot] {chat_id} a votat {verdict.upper()} pentru {id_canonic}")
+
+def _bot_loop():
+    if not _token():
         print("⚠️ [Bot] Token Telegram lipsă — bot control dezactivat.")
         return
 
-    print("🤖 [Bot] Pornit! Ascult comenzi Telegram...")
+    if beta.e_activ():
+        print("🧪 [Bot BETA] Pornit pe tokenul de test. Botul vechi e neatins.")
+    else:
+        print("🤖 [Bot] Pornit! Ascult comenzi Telegram...")
     offset = 0
 
     while True:
@@ -479,6 +759,12 @@ def _bot_loop():
             updates = _get_updates(offset)
             for update in updates:
                 offset  = update["update_id"] + 1
+
+                # Apasare pe butoanele Good / Bad de sub o notificare.
+                if "callback_query" in update:
+                    _handle_callback(update)
+                    continue
+
                 message = update.get("message", {})
                 chat_id = str(message.get("chat", {}).get("id", ""))
                 text    = message.get("text", "")
@@ -516,10 +802,29 @@ def start_bot_thread():
 
     return t
 
+# Ultima alerta trimisa per magazin, ca sa nu repetam acelasi mesaj.
+_ultima_alerta_site = {}
+_lock_alerte_site = threading.Lock()
+
+# Un magazin care oscileaza (fail, fail, fail, ok, fail, fail, fail...) reseteaza
+# contorul de esecuri si ar trimite alerta la nesfarsit. Pe feed-ul real,
+# Bookcity a trimis 5 mesaje identice. O alerta la 30 de minute e suficienta.
+RACIRE_ALERTA_SITE = 30 * 60
+
+
 def alert_site_failure(site_name: str, consecutive: int):
-    """Chemat din main.py când un site eșuează de mai multe ori la rând."""
-    if consecutive in (3, 10):
-        _broadcast(
-            f"⚠️ <b>ALERTĂ: {site_name}</b> — {consecutive} eșecuri consecutive!\n"
-            "Site-ul poate fi down sau blocat. Verifică manual."
-        )
+    """Chemat din main.py cand un site esueaza de mai multe ori la rand."""
+    if consecutive not in (3, 10):
+        return
+
+    acum = time.time()
+    with _lock_alerte_site:
+        ultima = _ultima_alerta_site.get(site_name, 0)
+        if (acum - ultima) < RACIRE_ALERTA_SITE:
+            return
+        _ultima_alerta_site[site_name] = acum
+
+    _broadcast(
+        f"⚠️ <b>ALERTA: {site_name}</b> — {consecutive} esecuri consecutive!\n"
+        "Site-ul poate fi down sau blocat. Verifica manual."
+    )

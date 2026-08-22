@@ -1,0 +1,448 @@
+{
+  "_meta": {
+    "schema_version": 1,
+    "generated_at": "2026-08-17T19:00:00+03:00",
+    "generated_by": "agent-saptamanal",
+    "valid_until": "2026-08-24T19:00:00+03:00",
+    "week_label": "S34 · 18-24 august 2026",
+    "active_slots_used": 9,
+    "active_slots_max": 12,
+    "note": "Preturile de revanzare sunt mediane verificate manual de agent. Botul NU le recalculeaza live - doar face aritmetica. Daca resale_checked_at e mai vechi de 14 zile, itemul trece automat pe confidence=low si nu mai declanseaza alerta de tip BUY."
+  },
+  "defaults": {
+    "platform_fee_pct": 0.1,
+    "shipping_cost_ron": 20,
+    "min_profit_ron": 100,
+    "min_roi_pct": 0.35,
+    "min_liquidity_30d": 8,
+    "max_alerts_per_item_per_day": 3,
+    "stale_after_days": 14
+  },
+  "items": [
+    {
+      "id": "pkm-30th-etb",
+      "enabled": true,
+      "tier": "S",
+      "niche": "Pokemon TCG",
+      "label": "30th Celebration - Elite Trainer Box",
+      "match": {
+        "include_all": [
+          "30th"
+        ],
+        "include_any": [
+          "elite trainer",
+          "etb"
+        ],
+        "exclude": [
+          "sleeve",
+          "binder",
+          "album",
+          "single",
+          "promo card"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 325,
+        "sites": [
+          "Pokemon TCG - Krit",
+          "Pokemon In Stoc - Redgoblin",
+          "Pokemon TCG - Lexshop",
+          "Pokemon TCG - Noriel"
+        ],
+        "max_qty_per_drop": 4,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 520,
+        "source": "cardmarket+vinted-ro",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 22,
+        "confidence": "medium",
+        "note": "Pre-lansare. Estimare pe baza ETB-urilor aniversare anterioare. Recalibrat obligatoriu in S38, dupa 16 sept."
+      },
+      "thresholds": {
+        "min_profit_ron": 120,
+        "min_roi_pct": 0.35
+      },
+      "expires_at": "2026-11-01",
+      "why": "Set aniversar 30 ani, lansare 16 septembrie. Cerere de colectionari peste cea de jucatori, deci nu depinde de meta. Alocare EU istoric sub cerere la seturile aniversare."
+    },
+    {
+      "id": "pkm-30th-booster-box",
+      "enabled": true,
+      "tier": "S",
+      "niche": "Pokemon TCG",
+      "label": "30th Celebration - Booster Box / Display",
+      "match": {
+        "include_all": [
+          "30th"
+        ],
+        "include_any": [
+          "booster box",
+          "display",
+          "booster bundle"
+        ],
+        "exclude": [
+          "sleeved booster",
+          "single pack",
+          "blister"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 885,
+        "sites": [
+          "Pokemon TCG - Krit",
+          "Pokemon In Stoc - Redgoblin",
+          "Pokemon TCG - Lexshop"
+        ],
+        "max_qty_per_drop": 2,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 1350,
+        "source": "cardmarket",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 14,
+        "confidence": "medium"
+      },
+      "thresholds": {
+        "min_profit_ron": 250,
+        "min_roi_pct": 0.35
+      },
+      "expires_at": "2026-11-01",
+      "why": "Acelasi val ca ETB-ul, ticket mai mare si marja absoluta mai buna. Prioritate maxima daca ai capitalul liber in septembrie."
+    },
+    {
+      "id": "op-tcg-display",
+      "enabled": true,
+      "tier": "A",
+      "niche": "One Piece TCG",
+      "label": "One Piece - Booster Display (orice set recent)",
+      "match": {
+        "include_all": [
+          "one piece"
+        ],
+        "include_any": [
+          "booster display",
+          "display",
+          "booster box",
+          "op-16",
+          "op-17"
+        ],
+        "exclude": [
+          "starter",
+          "st-",
+          "single",
+          "sleeve",
+          "playmat"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 490,
+        "sites": [
+          "Pokemon TCG - Krit",
+          "Pokemon In Stoc - Redgoblin",
+          "Pokemon TCG - Lexshop"
+        ],
+        "max_qty_per_drop": 3,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 790,
+        "source": "cardmarket",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 18,
+        "confidence": "high"
+      },
+      "thresholds": {
+        "min_profit_ron": 150,
+        "min_roi_pct": 0.4
+      },
+      "expires_at": null,
+      "why": "Alocare EU cea mai stransa dintre TCG-urile majore. Zero scrapere noi - aceleasi magazine ca Pokemon."
+    },
+    {
+      "id": "riftbound-display",
+      "enabled": true,
+      "tier": "A",
+      "niche": "Riftbound",
+      "label": "Riftbound - Booster Display (Vendetta / Radiance)",
+      "match": {
+        "include_all": [
+          "riftbound"
+        ],
+        "include_any": [
+          "display",
+          "booster box",
+          "vendetta",
+          "radiance",
+          "unleashed"
+        ],
+        "exclude": [
+          "single",
+          "sleeve",
+          "playmat",
+          "deck box"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 595,
+        "sites": [
+          "Pokemon TCG - Krit",
+          "Pokemon In Stoc - Redgoblin"
+        ],
+        "max_qty_per_drop": 3,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 1020,
+        "source": "ebay-sold",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 11,
+        "confidence": "low",
+        "note": "Piata inca imatura, preturile sar mult. Confidence low = pragul de ROI e ridicat intentionat."
+      },
+      "thresholds": {
+        "min_profit_ron": 200,
+        "min_roi_pct": 0.5
+      },
+      "expires_at": "2026-12-31",
+      "why": "Cel mai bun profil risc/randament al anului, dar cel mai expus la reprint. Vinde in 2-3 saptamani, nu tine."
+    },
+    {
+      "id": "lego-gwp",
+      "enabled": true,
+      "tier": "B",
+      "niche": "LEGO",
+      "label": "LEGO GWP / seturi promotionale exclusive",
+      "match": {
+        "include_any": [
+          "gift with purchase",
+          "gwp",
+          "insiders reward",
+          "exclusiv lego",
+          "vip exclusive"
+        ],
+        "exclude": [
+          "polybag mini",
+          "keychain",
+          "breloc"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 0,
+        "sites": [
+          "LEGO.com RO",
+          "Pokemon TCG - Noriel"
+        ],
+        "max_qty_per_drop": 2,
+        "note": "max_price_ron=0 inseamna ca itemul e monitorizat ca EVENIMENT, nu ca achizitie directa. Alerta e de tip HEADS_UP, nu BUY."
+      },
+      "resale": {
+        "median_ron": 260,
+        "source": "bricklink+vinted-ro",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 9,
+        "confidence": "medium"
+      },
+      "thresholds": {
+        "min_profit_ron": 0,
+        "min_roi_pct": 0
+      },
+      "expires_at": null,
+      "why": "Cost marginal zero daca achizitia principala era oricum profitabila. Nu are nevoie de viteza - promotiile tin saptamani."
+    },
+    {
+      "id": "lego-eol-icons",
+      "enabled": true,
+      "tier": "B",
+      "niche": "LEGO",
+      "label": "LEGO EOL - seturi Icons/UCS la reducere >=25%",
+      "match": {
+        "include_any": [
+          "10316",
+          "71043",
+          "10307",
+          "42143",
+          "76417",
+          "10302",
+          "10323",
+          "75192"
+        ],
+        "exclude": [
+          "minifigure",
+          "polybag",
+          "used",
+          "second hand"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 2105,
+        "sites": [
+          "Pokemon TCG - Noriel",
+          "LEGO.com RO",
+          "BrickDepot"
+        ],
+        "max_qty_per_drop": 1,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 3100,
+        "source": "bricklink-sold-6m",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 6,
+        "confidence": "high",
+        "note": "Lichiditate mica dar pretul e foarte stabil. Hold 12-18 luni, nu flip rapid."
+      },
+      "thresholds": {
+        "min_profit_ron": 400,
+        "min_roi_pct": 0.3
+      },
+      "expires_at": null,
+      "why": "Mecanismul cel mai predictibil: oferta se opreste, cererea nu. Marja dubla daca prinzi si o promotie.",
+      "shipping_cost_ron": 50
+    },
+    {
+      "id": "jellycat-retired",
+      "enabled": true,
+      "tier": "B",
+      "niche": "Jellycat",
+      "label": "Jellycat - modele retrase / editii sezoniere",
+      "match": {
+        "include_all": [
+          "jellycat"
+        ],
+        "include_any": [
+          "amuseable",
+          "bashful",
+          "really big",
+          "huge",
+          "limited"
+        ],
+        "exclude": [
+          "used",
+          "fara eticheta",
+          "second hand"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 240,
+        "sites": [
+          "Carturesti",
+          "Pokemon TCG - Bebe Tei",
+          "Pokemon TCG - Noriel"
+        ],
+        "max_qty_per_drop": 4,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 410,
+        "source": "vinted-ro+vinted-fr",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 27,
+        "confidence": "medium"
+      },
+      "thresholds": {
+        "min_profit_ron": 100,
+        "min_roi_pct": 0.45
+      },
+      "expires_at": null,
+      "why": "Ticket mic, livrare ieftina, rotatie in zile pe Vinted. Magazinele sunt deja in sites_config - cost marginal aproape zero.",
+      "shipping_cost_ron": 15
+    },
+    {
+      "id": "pkm-core-etb",
+      "enabled": true,
+      "tier": "A",
+      "niche": "Pokemon TCG",
+      "label": "Pokemon - ETB seturi curente (core permanent)",
+      "match": {
+        "include_any": [
+          "elite trainer box",
+          "etb",
+          "ultra premium collection",
+          "upc"
+        ],
+        "exclude": [
+          "sleeve",
+          "binder",
+          "album",
+          "empty",
+          "gol"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 290,
+        "sites": [
+          "Pokemon TCG - Krit",
+          "Pokemon In Stoc - Redgoblin",
+          "Pokemon TCG - Lexshop",
+          "Pokemon TCG - Noriel",
+          "Pokemon TCG - PokeMANIA",
+          "Pokemon TCG - Bookcity",
+          "Pokemon TCG - SMYK",
+          "Pokemon TCG - Bebe Tei"
+        ],
+        "max_qty_per_drop": 3,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 445,
+        "source": "vinted-ro+olx",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 31,
+        "confidence": "high"
+      },
+      "thresholds": {
+        "min_profit_ron": 90,
+        "min_roi_pct": 0.3
+      },
+      "expires_at": null,
+      "why": "Slotul tau de baza - il stii cel mai bine, lichiditatea e cea mai mare. Nu se roteste niciodata."
+    },
+    {
+      "id": "exp-hotwheels-rlc",
+      "enabled": true,
+      "tier": "C",
+      "niche": "Hot Wheels",
+      "label": "EXPERIMENT (S34-S38) - Hot Wheels RLC / Team Transport",
+      "match": {
+        "include_any": [
+          "red line club",
+          "rlc",
+          "team transport",
+          "super treasure hunt"
+        ],
+        "exclude": [
+          "lot",
+          "custom",
+          "loose",
+          "desfacut"
+        ]
+      },
+      "buy": {
+        "max_price_ron": 160,
+        "sites": [
+          "Mattel Creations",
+          "Pokemon TCG - Noriel"
+        ],
+        "max_qty_per_drop": 5,
+        "_derived": "max_price_ron = floor( min( (resale*(1-fee)-shipping)/(1+min_roi), resale*(1-fee)-shipping-min_profit ) ) — nu se seteaza manual"
+      },
+      "resale": {
+        "median_ron": 290,
+        "source": "ebay-sold",
+        "checked_at": "2026-08-17",
+        "liquidity_30d": 12,
+        "confidence": "low"
+      },
+      "thresholds": {
+        "min_profit_ron": 80,
+        "min_roi_pct": 0.55
+      },
+      "expires_at": "2026-09-14",
+      "why": "Slot experimental. Daca pana pe 14 septembrie nu produce minim 2 achizitii profitabile, se taie automat si slotul se elibereaza.",
+      "shipping_cost_ron": 12
+    }
+  ]
+}

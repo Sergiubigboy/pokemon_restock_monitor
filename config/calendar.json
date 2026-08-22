@@ -1,0 +1,182 @@
+{
+  "_meta": {
+    "schema_version": 1,
+    "generated_at": "2026-08-17T19:00:00+03:00",
+    "generated_by": "agent-saptamanal",
+    "timezone": "Europe/Bucharest",
+    "note": "Evenimente cu data cunoscuta. Botul trimite HEADS_UP la fiecare offset din notify_offsets si apoi, daca eventul are watchlist_ids, ridica automat acele item-uri pe tier S in fereastra activa."
+  },
+
+  "events": [
+    {
+      "id": "pkm-30th-launch",
+      "niche": "Pokemon TCG",
+      "title": "Lansare Pokemon TCG - 30th Celebration",
+      "starts_at": "2026-09-16T09:00:00+03:00",
+      "confidence": "confirmed",
+      "source": "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/",
+
+      "mechanism": "Set aniversar 30 ani. Alocare EU istoric sub cerere la aniversari. Magazinele RO primesc 10-40 cutii si se epuizeaza in ore.",
+      "action": "Ai capitalul liber si contul pre-logat pe Krit, Redgoblin si Lexshop. Preorderele se deschid tipic cu 3-5 saptamani inainte - prinde preorderul, nu drop-ul.",
+
+      "notify_offsets": ["-21d", "-7d", "-2d", "-2h"],
+      "watchlist_ids": ["pkm-30th-etb", "pkm-30th-booster-box"],
+      "promote_to_tier": "S",
+      "promote_window": { "from": "2026-09-09", "to": "2026-10-15" }
+    },
+
+    {
+      "id": "pkm-30th-wave2",
+      "niche": "Pokemon TCG",
+      "title": "Val 2 - 30th Celebration (mini tins, Booster Bundle, Binder Collection)",
+      "starts_at": "2026-10-02T09:00:00+03:00",
+      "confidence": "confirmed",
+      "source": "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/",
+
+      "mechanism": "Al doilea val al aceleiasi lansari. Binder Collection si Booster Bundle au alocare mai mica decat ETB-ul.",
+      "action": "Verifica intai daca valul 1 s-a vandut cu marja reala. Daca nu, sari peste valul 2.",
+
+      "notify_offsets": ["-7d", "-1d"],
+      "watchlist_ids": ["pkm-30th-etb"],
+      "promote_to_tier": "A",
+      "promote_window": { "from": "2026-09-28", "to": "2026-10-20" }
+    },
+
+    {
+      "id": "mtg-hobbit",
+      "niche": "Magic: The Gathering",
+      "title": "MTG - The Hobbit (Universes Beyond)",
+      "starts_at": "2026-08-14T09:00:00+03:00",
+      "confidence": "confirmed",
+      "source": "https://orbsportscards.com/tcg-release-calendar-2026/",
+
+      "mechanism": "Licenta puternica in afara publicului MTG. Collector Boosters au raportul print-run/cerere cel mai strans.",
+      "action": "Deja lansat. Urmareste Collector Booster Box la reducere in urmatoarele 6 saptamani - acolo apare marja, nu la lansare.",
+
+      "notify_offsets": ["-3d"],
+      "watchlist_ids": [],
+      "promote_to_tier": null,
+      "promote_window": null
+    },
+
+    {
+      "id": "mtg-reality-fracture",
+      "niche": "Magic: The Gathering",
+      "title": "MTG - Reality Fracture (set Standard)",
+      "starts_at": "2026-10-02T09:00:00+03:00",
+      "confidence": "confirmed",
+      "source": "https://orbsportscards.com/tcg-release-calendar-2026/",
+
+      "mechanism": "Set Standard - marja e in Collector Boosters si in bundle-ul Secret Lair asociat, nu in Play Boosters.",
+      "action": "Monitorizeaza doar Collector Booster Box. Play Boosters = ignora.",
+
+      "notify_offsets": ["-7d", "-1d"],
+      "watchlist_ids": [],
+      "promote_to_tier": null,
+      "promote_window": null
+    },
+
+    {
+      "id": "mtg-star-trek",
+      "niche": "Magic: The Gathering",
+      "title": "MTG - Star Trek (Universes Beyond)",
+      "starts_at": "2026-11-20T09:00:00+03:00",
+      "confidence": "confirmed",
+      "source": "https://orbsportscards.com/tcg-release-calendar-2026/",
+
+      "mechanism": "A treia licenta mare a anului. Public din afara MTG, alocare depasita istoric.",
+      "action": "Preorder Collector Booster Box la Krit/Lexshop cand se deschide (tipic T-6 saptamani).",
+
+      "notify_offsets": ["-45d", "-7d", "-1d"],
+      "watchlist_ids": [],
+      "promote_to_tier": null,
+      "promote_window": null
+    },
+
+    {
+      "id": "pkm-delta-reign",
+      "niche": "Pokemon TCG",
+      "title": "Pokemon TCG - Mega Evolution: Delta Reign",
+      "starts_at": "2026-11-06T09:00:00+03:00",
+      "confidence": "confirmed",
+      "source": "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/",
+
+      "mechanism": "Ultimul set principal al erei Mega Evolution. Seturile de final de era au istoric de apreciere peste medie.",
+      "action": "Pregateste capital din septembrie. Suprapunere cu Black Friday - atentie sa nu ramai fara lichiditate.",
+
+      "notify_offsets": ["-30d", "-7d", "-2d", "-2h"],
+      "watchlist_ids": ["pkm-core-etb"],
+      "promote_to_tier": "S",
+      "promote_window": { "from": "2026-10-30", "to": "2026-11-30" }
+    },
+
+    {
+      "id": "lego-gwp-lunar",
+      "niche": "LEGO",
+      "title": "Fereastra GWP LEGO (recurent - inceput de luna)",
+      "starts_at": "2026-09-01T01:00:00+03:00",
+      "recurrence": "monthly",
+      "confidence": "likely",
+      "source": "https://www.toysnbricks.com/lego-june-2026-promotions-gwp-gift-with-purchase-offers/",
+
+      "mechanism": "LEGO lanseaza promotiile GWP tipic la inceput de luna, frecvent noaptea (01:00-03:00 EET). Setul promotional nu se reimprima niciodata.",
+      "action": "Fii logat pe contul LEGO Insiders cu cardul salvat. Combina cu un set EOL pe care oricum il voiai - asa marja e dubla.",
+
+      "notify_offsets": ["-2d", "-12h"],
+      "watchlist_ids": ["lego-gwp"],
+      "promote_to_tier": "A",
+      "promote_window": null
+    },
+
+    {
+      "id": "lego-eol-dec31",
+      "niche": "LEGO",
+      "title": "Val mare de retrageri LEGO - 31 decembrie",
+      "starts_at": "2026-12-31T00:00:00+02:00",
+      "confidence": "confirmed",
+      "source": "https://www.brickfanatics.com/every-lego-set-retiring-this-year-and-beyond",
+
+      "mechanism": "Retragerea opreste oferta definitiv. Include 75192 Millennium Falcon, 76417 Gringotts CE, 42143 Ferrari Daytona SP3, 21058 Marea Piramida.",
+      "action": "Acumuleaza in Black Friday (noiembrie), nu in decembrie. In decembrie preturile de retail deja urca.",
+
+      "notify_offsets": ["-60d", "-30d", "-7d"],
+      "watchlist_ids": ["lego-eol-icons"],
+      "promote_to_tier": "A",
+      "promote_window": { "from": "2026-11-20", "to": "2026-12-31" }
+    },
+
+    {
+      "id": "black-friday-ro",
+      "niche": "Cross-nisa",
+      "title": "Black Friday Romania - fereastra de acumulare a anului",
+      "starts_at": "2026-11-13T00:00:00+02:00",
+      "confidence": "likely",
+      "source": "istoric eMAG (a doua vineri din noiembrie)",
+
+      "mechanism": "Singurul moment din an cand cumperi sub MSRP la volum, pe LEGO EOL, TCG si jucarii. Marja combinata discount+EOL depaseste 70%.",
+      "action": "Nu cumpara ce e la reducere. Cumpara ce era deja pe watchlist SI e la reducere. Pregateste lista cu 2 saptamani inainte.",
+
+      "notify_offsets": ["-21d", "-7d", "-1d"],
+      "watchlist_ids": ["lego-eol-icons", "pkm-core-etb"],
+      "promote_to_tier": "S",
+      "promote_window": { "from": "2026-11-10", "to": "2026-11-30" }
+    },
+
+    {
+      "id": "sezon-vanzare-q4",
+      "niche": "Cross-nisa",
+      "title": "Fereastra de VANZARE (nu cumparare) - noiembrie/decembrie",
+      "starts_at": "2026-11-25T00:00:00+02:00",
+      "confidence": "confirmed",
+      "source": "sezonalitate piata secundara",
+
+      "mechanism": "Cererea secundara e la maxim inainte de sarbatori. Aceleasi produse se vand cu 15-25% mai scump decat in iulie.",
+      "action": "Listeaza tot stocul acumulat in vara. Daca ai marfa nevanduta din septembrie, asta e fereastra in care iese.",
+
+      "notify_offsets": ["-14d", "-1d"],
+      "watchlist_ids": [],
+      "promote_to_tier": null,
+      "promote_window": null
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "verdicte": {
+    "pokemon|booster-box": {
+      "good": 0,
+      "bad": 5,
+      "verdict": "bad",
+      "ultima_data": "2026-08-19 13:45:22",
+      "de_catre": "8239802204"
+    },
+    "magic|booster-box": {
+      "good": 1,
+      "bad": 0,
+      "verdict": "good",
+      "ultima_data": "2026-08-19 13:47:09",
+      "de_catre": "8239802204"
+    }
+  },
+  "tokenuri": {
+    "cbb22e0167": "magic|booster-box",
+    "c2ea913b39": "pokemon|booster-box",
+    "62d139f977": "pokemon|collection-box"
+  }
+}

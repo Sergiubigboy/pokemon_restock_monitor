@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "descriere": "Ce tipuri de produs conteaza pentru fiecare nisa. Clasificatorul primeste lista nisei in prompt si marcheaza restul ca irelevante. Adaugi o nisa noua = adaugi un bloc aici, fara sa atingi codul.",
+    "tipuri_posibile": [
+      "etb", "upc", "booster_box", "booster_bundle", "booster_pack", "blister",
+      "tin", "collection_box", "battle_deck", "single_card", "accesoriu",
+      "set_lego", "gwp", "plus", "figurina", "altul"
+    ]
+  },
+  "Pokemon TCG": {
+    "relevante": ["etb", "upc", "booster_box", "booster_bundle", "booster_pack"],
+    "ignorate": ["single_card", "accesoriu", "plus", "figurina", "blister", "tin", "battle_deck"],
+    "nota": "Doar cutiile mari si pachetele de boostere. Blistere, tin-uri si decks au marja prea mica."
+  },
+  "One Piece TCG": {
+    "relevante": ["booster_box", "booster_pack"],
+    "ignorate": ["single_card", "accesoriu", "battle_deck", "plus"],
+    "nota": "Starter deck-urile se reimprima constant, nu au marja."
+  },
+  "LEGO": {
+    "relevante": ["set_lego", "gwp"],
+    "ignorate": ["accesoriu", "single_card", "plus", "figurina"],
+    "nota": "Seturi exclusive, GWP si Icons/UCS aproape de retragere."
+  }
+}

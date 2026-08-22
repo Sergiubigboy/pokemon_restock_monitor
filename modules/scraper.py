@@ -4,7 +4,18 @@ import logging
 from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
+from modules.stock_parser import parse_stock_qty
+
 def check_search_page_stock(site_config: dict) -> list:
+    # ── Fast-path fara browser ────────────────────────────────────────
+    # Activat per site cu "engine": "http" in sites_config.json.
+    # Fara flagul asta nu se schimba NIMIC — toata logica anti-bot de mai jos
+    # (persistent context, msedge, AutomationControlled) ramane neatinsa.
+    # Importul e local intentionat: fara flag, bs4 nici nu trebuie instalat.
+    if site_config.get("engine") == "http":
+        from modules.http_scraper import check_search_page_stock_http
+        return check_search_page_stock_http(site_config)
+
     url = site_config.get("url")
     name = site_config.get("name")
     card_selector = site_config.get("card_selector", ".product-item")
@@ -28,7 +39,7 @@ def check_search_page_stock(site_config: dict) -> list:
         try:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=user_data_dir,
-                #channel="msedge", 
+                channel="msedge", 
                 headless=is_headless, # <--- Aici aplicăm setarea dinamică
                 viewport={"width": 1280, "height": 720},
                 args=["--disable-blink-features=AutomationControlled", "--disable-infobars", "--window-position=-3000,0"]
@@ -61,8 +72,18 @@ def check_search_page_stock(site_config: dict) -> list:
                     p_price = price_el.text_content().strip() if price_el else "N/A"
                     p_price = " ".join(p_price.split()) # Curățăm textul de spații aiurea
                     
-                    link_el = card.locator("a").first
-                    p_link = link_el.get_attribute("href") if link_el else url
+                    # Daca site-ul are "link_selector" in config, il folosim.
+                    # Altfel ramane comportamentul vechi: primul <a> din card.
+                    link_selector = site_config.get("link_selector")
+                    p_link = None
+                    if link_selector:
+                        try:
+                            p_link = card.locator(link_selector).first.get_attribute("href")
+                        except Exception:
+                            p_link = None
+                    if not p_link:
+                        link_el = card.locator("a").first
+                        p_link = link_el.get_attribute("href") if link_el else url
                     
                     # Reparăm link-urile relative (ex: Europosters, Smyk)
                     if p_link and p_link.startswith("/"):
@@ -76,11 +97,25 @@ def check_search_page_stock(site_config: dict) -> list:
                     if p_img and p_img.startswith("//"):
                         p_img = "https:" + p_img
 
+                    # --- Extragem CANTITATEA (optional) ---
+                    # Intai selectorul dedicat "qty_selector", daca site-ul are
+                    # unul, apoi cautam un numar in textul intregului card.
+                    # None inseamna "necunoscuta" si alerta se trimite fara ea.
+                    text_stoc = ""
+                    qty_selector = site_config.get("qty_selector")
+                    if qty_selector:
+                        try:
+                            text_stoc = card.locator(qty_selector).first.text_content() or ""
+                        except Exception:
+                            text_stoc = ""
+                    p_qty = parse_stock_qty(text_stoc) or parse_stock_qty(text_card)
+
                     available_products.append({
                         "name": p_name,
                         "url": p_link,
                         "image": p_img,
-                        "price": p_price
+                        "price": p_price,
+                        "qty": p_qty
                     })
 
         except Exception as e:

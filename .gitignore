@@ -4,7 +4,11 @@ env/
 .venv/
 
 # Fișiere de configurare cu date sensibile
+# Modelul cu asterisc prinde și copiile de siguranță (.env.backup, .env.local),
+# nu doar fișierul cu numele exact — altfel un backup ar ajunge pe GitHub.
 .env
+.env*
+config/.env*
 
 # Fișiere cache Python
 __pycache__/
@@ -20,3 +24,19 @@ __pycache__/
 config/profiles/
 chrome_profile/
 *_profile/
+
+# Fișiere de stare scrise de bot de zeci de ori pe oră.
+# Dacă rămân urmărite de Git, `git pull` pe Pi eșuează permanent cu
+# "local changes would be overwritten by merge".
+config/known_products.json
+config/historical_products.json
+config/state.json
+config/muted_sites.json
+config/alert_counts.json
+config/item_performance.json
+*.log
+config/product_absence.json
+config/last_notified.json
+config/product_classifications.json
+config/rejected_products.json
+config/beta.json

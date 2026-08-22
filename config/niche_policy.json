@@ -1,0 +1,101 @@
+{
+  "_meta": {
+    "descriere": "Ce TIPURI de produs conteaza pe fiecare nisa. Nu contine produse individuale — clasificatorul deduce tipul din nume. O nisa noua = un bloc de aici.",
+    "regula": "Un produs ajunge la tine doar daca tipul lui e in 'urmareste'. Setul din care face parte decide cat de tare suna alerta (vezi set_intelligence.json).",
+    "editii": "Editiile asiatice au piata secundara separata si lichiditate aproape zero in RO. Implicit acceptam doar 'standard'."
+  },
+  "Pokemon TCG": {
+    "urmareste": [
+      "etb",
+      "upc",
+      "booster_box",
+      "booster_bundle",
+      "collection_box"
+    ],
+    "ignora": [
+      "blister",
+      "tin",
+      "battle_deck",
+      "single_card",
+      "accesoriu",
+      "plus",
+      "booster_pack",
+      "play_booster_box"
+    ],
+    "nota": "Cutii, nu pachete singulare. Boosterul de 29 lei nu e marfa de scalping.",
+    "editii_acceptate": [
+      "standard"
+    ]
+  },
+  "One Piece TCG": {
+    "urmareste": [
+      "booster_box",
+      "booster_bundle"
+    ],
+    "ignora": [
+      "battle_deck",
+      "single_card",
+      "accesoriu",
+      "blister",
+      "booster_pack",
+      "collection_box"
+    ],
+    "nota": "Doar display-uri. Starter deck-urile se reimprima constant.",
+    "editii_acceptate": [
+      "standard"
+    ]
+  },
+  "Riftbound": {
+    "urmareste": [
+      "booster_box",
+      "booster_bundle",
+      "collection_box"
+    ],
+    "ignora": [
+      "single_card",
+      "accesoriu",
+      "battle_deck",
+      "blister",
+      "booster_pack"
+    ],
+    "nota": "Piata imatura, marja mare dar expusa la reprint. Vinde in 2-3 saptamani.",
+    "editii_acceptate": [
+      "standard"
+    ]
+  },
+  "Magic The Gathering": {
+    "urmareste": [
+      "collector_booster_box",
+      "collection_box"
+    ],
+    "ignora": [
+      "play_booster_box",
+      "single_card",
+      "accesoriu",
+      "battle_deck",
+      "blister",
+      "booster_pack",
+      "booster_box"
+    ],
+    "nota": "DOAR Collector Booster Box. Play Boosters au marja subtire.",
+    "editii_acceptate": [
+      "standard"
+    ]
+  },
+  "LEGO": {
+    "urmareste": [
+      "set_lego",
+      "gwp"
+    ],
+    "ignora": [
+      "accesoriu",
+      "single_card",
+      "plus",
+      "figurina"
+    ],
+    "nota": "Seturi EOL/exclusive si GWP-uri. Cost marginal zero la GWP.",
+    "editii_acceptate": [
+      "standard"
+    ]
+  }
+}

@@ -8,7 +8,8 @@
         "price_selector": ".price",
         "in_stock_text": "adauga in cos",
         "profile_folder": "noriel_profile",
-        "headless": false
+        "headless": false,
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon In Stoc - Redgoblin",
@@ -17,8 +18,9 @@
         "card_selector": ".productitem",
         "title_selector": ".productitem--title",
         "price_selector": ".price",
-        "in_stock_text": "", 
-        "profile_folder": "redgoblin_profile"
+        "in_stock_text": "",
+        "profile_folder": "redgoblin_profile",
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - SMYK",
@@ -28,7 +30,8 @@
         "title_selector": ".complex-product__name",
         "price_selector": ".price--new",
         "in_stock_text": "adauga in cos",
-        "profile_folder": "smyk_profile"
+        "profile_folder": "smyk_profile",
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - Krit",
@@ -39,7 +42,8 @@
         "price_selector": ".price",
         "in_stock_text": "",
         "profile_folder": "krit_profile",
-        "headless": false
+        "headless": false,
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - Lexshop",
@@ -49,7 +53,8 @@
         "title_selector": ".title",
         "price_selector": ".price",
         "in_stock_text": "adauga",
-        "profile_folder": "lexshop_profile"
+        "profile_folder": "lexshop_profile",
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - Bookcity",
@@ -59,7 +64,8 @@
         "title_selector": ".product-item-name",
         "price_selector": ".price",
         "in_stock_text": "adauga in cos",
-        "profile_folder": "bookcity_profile"
+        "profile_folder": "bookcity_profile",
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - PokeMANIA",
@@ -69,7 +75,8 @@
         "title_selector": ".product__name",
         "price_selector": ".product__info--price-gross",
         "in_stock_text": "",
-        "profile_folder": "pokemania_profile"
+        "profile_folder": "pokemania_profile",
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - Bebe Tei",
@@ -80,6 +87,63 @@
         "price_selector": ".price",
         "image_selector": ".product-image-listing picture img",
         "in_stock_text": "",
-        "profile_folder": "bebetei_profile"
+        "profile_folder": "bebetei_profile",
+        "niche": "Pokemon TCG"
+    },
+    {
+        "name": "One Piece - TCG Shop",
+        "url": "https://tcg-shop.ro/category/one-piece",
+        "type": "search_page",
+        "niche": "One Piece TCG",
+        "engine": "http",
+        "card_selector": ".ltn__product-item",
+        "title_selector": ".product-title a",
+        "price_selector": ".product-price span",
+        "image_selector": ".product-img img",
+        "link_selector": ".product-title a",
+        "in_stock_text": "adaugă în coș",
+        "profile_folder": "tcgshop_profile"
+    },
+    {
+        "name": "Pokemon TCG - TCG Shop",
+        "url": "https://tcg-shop.ro/category/pokemon",
+        "type": "search_page",
+        "niche": "Pokemon TCG",
+        "engine": "http",
+        "card_selector": ".ltn__product-item",
+        "title_selector": ".product-title a",
+        "price_selector": ".product-price span",
+        "image_selector": ".product-img img",
+        "link_selector": ".product-title a",
+        "in_stock_text": "adaugă în coș",
+        "profile_folder": "tcgshop_profile"
+    },
+    {
+        "name": "Riftbound - TCG Shop",
+        "url": "https://tcg-shop.ro/category/riftbound-league-of-legends-tcg",
+        "type": "search_page",
+        "niche": "Riftbound",
+        "engine": "http",
+        "card_selector": ".ltn__product-item",
+        "title_selector": ".product-title a",
+        "price_selector": ".product-price span",
+        "image_selector": ".product-img img",
+        "link_selector": ".product-title a",
+        "in_stock_text": "adaugă în coș",
+        "profile_folder": "tcgshop_profile"
+    },
+    {
+        "name": "Magic - TCG Shop",
+        "url": "https://tcg-shop.ro/category/magic-the-gathering",
+        "type": "search_page",
+        "niche": "Magic The Gathering",
+        "engine": "http",
+        "card_selector": ".ltn__product-item",
+        "title_selector": ".product-title a",
+        "price_selector": ".product-price span",
+        "image_selector": ".product-img img",
+        "link_selector": ".product-title a",
+        "in_stock_text": "adaugă în coș",
+        "profile_folder": "tcgshop_profile"
     }
 ]

@@ -1,0 +1,174 @@
+{
+  "_meta": {
+    "descriere": "Ce SETURI merita, aflat prin research INAINTE de drop. Rescris saptamanal de agentul Claude.",
+    "regula_tier": "S = cumpara orice din set. A = cumpara tipurile urmarite. B = doar la pret bun. C = nu trimite nimic.",
+    "regula_surse": "Niciun set fara sursa verificabila. Fara sursa = nu exista.",
+    "generat_la": "2026-08-19",
+    "generat_de": "research manual cu web search",
+    "valid_until": "2026-08-26"
+  },
+  "Pokemon TCG": {
+    "30th celebration": {
+      "tier": "S",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-09-16",
+      "motiv": "Set aniversar 30 ani, peste 150 de carti, lansare globala simultana. Cerere de colectionari, nu doar jucatori.",
+      "surse": [
+        "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/"
+      ],
+      "verificat_la": "2026-08-19",
+      "actiune": "orice produs din set"
+    },
+    "prismatic evolutions": {
+      "tier": "S",
+      "categorie": "istoric_dovedit",
+      "motiv": "Epuizat la lansare; TPCi a recunoscut public probleme de aprovizionare inainte de lansare.",
+      "surse": [
+        "https://bulbagarden.net/",
+        "https://www.ign.com/"
+      ],
+      "verificat_la": "2026-08-19",
+      "actiune": "cumpara la orice restock"
+    },
+    "delta reign": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-11-06",
+      "motiv": "Ultimul set principal al erei Mega Evolution. Seturile de final de era au istoric de apreciere peste medie.",
+      "surse": [
+        "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/"
+      ],
+      "verificat_la": "2026-08-19"
+    },
+    "pitch black": {
+      "tier": "C",
+      "categorie": "evitat",
+      "motiv": "Set curent, larg disponibil in toate magazinele RO. Cererea migreaza spre 30th Celebration care se lanseaza imediat dupa.",
+      "surse": [
+        "evaluare Sergiu 2026-08-19",
+        "stoc observat pe 5 magazine RO"
+      ],
+      "verificat_la": "2026-08-19"
+    },
+    "chaos rising": {
+      "tier": "C",
+      "categorie": "evitat",
+      "motiv": "Set curent, disponibilitate buna in retail RO.",
+      "surse": [
+        "evaluare Sergiu 2026-08-19"
+      ],
+      "verificat_la": "2026-08-19"
+    },
+    "perfect order": {
+      "tier": "C",
+      "categorie": "evitat",
+      "motiv": "Set curent, disponibilitate buna in retail RO.",
+      "surse": [
+        "evaluare Sergiu 2026-08-19"
+      ],
+      "verificat_la": "2026-08-19"
+    }
+  },
+  "One Piece TCG": {
+    "world's strongest warriors": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-08-28",
+      "motiv": "OP-17. Lansare EN pe 28 august, pre-release US pe 21. Primul set cu lansare mondiala simultana — alocarea la lansare ramane stransa.",
+      "surse": [
+        "https://titancards.co.uk/blogs/news/upcoming-one-piece-card-game-releases-2026",
+        "https://www.rarerip.com/one-piece-release/op-17"
+      ],
+      "verificat_la": "2026-08-19",
+      "actiune": "display-uri la lansare; sunt 9 zile pana atunci"
+    },
+    "op-17": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-08-28",
+      "motiv": "Acelasi set ca 'World's Strongest Warriors', listat de multe magazine dupa cod.",
+      "surse": [
+        "https://www.rarerip.com/one-piece-release/op-17"
+      ],
+      "verificat_la": "2026-08-19"
+    },
+    "the time of battle": {
+      "tier": "B",
+      "categorie": "istoric_dovedit",
+      "motiv": "OP-16, lansat 12 iunie 2026, centrat pe Paramount War. Fara semnal de epuizare in surse.",
+      "surse": [
+        "https://titancards.co.uk/blogs/news/upcoming-one-piece-card-game-releases-2026"
+      ],
+      "verificat_la": "2026-08-19"
+    },
+    "op-16": {
+      "tier": "B",
+      "categorie": "istoric_dovedit",
+      "motiv": "Acelasi set ca 'The Time of Battle'.",
+      "surse": [
+        "https://www.rarerip.com/one-piece-release/op-16"
+      ],
+      "verificat_la": "2026-08-19"
+    }
+  },
+  "Riftbound": {
+    "radiance": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-10-23",
+      "motiv": "Set 5. Booster Box preorder deja epuizat la unii retaileri, cu 2 luni inainte de lansare — semnal de cerere peste alocare.",
+      "surse": [
+        "https://riftbound.gg/radiance/",
+        "https://skyfoxgames.com/products/league-of-legends-riftbound-radiance-booster-box-preorder"
+      ],
+      "verificat_la": "2026-08-19",
+      "actiune": "prinde preorderul, nu drop-ul"
+    },
+    "vendetta": {
+      "tier": "B",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "2026-07-31",
+      "motiv": "Set 4, lansat 31 iulie 2026. Primul set cu data unica China + US. Deja pe piata de 3 saptamani.",
+      "surse": [
+        "https://www.wargamer.com/riftbound-league-of-legends-trading-card-game/riftbound-release-schedule"
+      ],
+      "verificat_la": "2026-08-19"
+    }
+  },
+  "Magic The Gathering": {
+    "star trek": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-11-13",
+      "motiv": "Universes Beyond cu licenta din afara publicului MTG. Collector Boosters contin carti semnate de mana de actori, inserate aleator — cel mai urmarit produs din lineup.",
+      "surse": [
+        "https://magic.wizards.com/en/products/star-trek",
+        "https://www.trackalacker.com/articles/news/magic-the-gathering-star-trek-buying-guide"
+      ],
+      "verificat_la": "2026-08-19",
+      "actiune": "DOAR Collector Booster Box. Preorder deja deschis."
+    }
+  },
+  "LEGO": {
+    "75192": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "motiv": "Millennium Falcon UCS, retragere confirmata in 2026 dupa aproape un deceniu in productie. Retragerea opreste oferta definitiv.",
+      "surse": [
+        "https://www.brickfanatics.com/the-10-biggest-lego-sets-retiring-end-of-2026"
+      ],
+      "verificat_la": "2026-08-19",
+      "actiune": "cumpara la orice reducere; hold 12-18 luni"
+    },
+    "millennium falcon": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "motiv": "Acelasi set ca 75192, listat de multe magazine dupa nume.",
+      "surse": [
+        "https://www.brickfanatics.com/the-10-biggest-lego-sets-retiring-end-of-2026"
+      ],
+      "verificat_la": "2026-08-19"
+    },
+    "_nota_agent": "Brick Fanatics publica lunar lista completa de retrageri. Agentul de research trebuie sa o citeasca la fiecare rulare: https://www.brickfanatics.com/every-lego-set-retiring-this-year-and-beyond"
+  }
+}
