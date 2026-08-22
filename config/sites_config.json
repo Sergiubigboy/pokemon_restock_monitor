@@ -9,7 +9,8 @@
         "in_stock_text": "adauga in cos",
         "profile_folder": "noriel_profile",
         "headless": false,
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "Pokemon In Stoc - Redgoblin",
@@ -20,7 +21,8 @@
         "price_selector": ".price",
         "in_stock_text": "",
         "profile_folder": "redgoblin_profile",
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "Pokemon TCG - SMYK",
@@ -43,7 +45,8 @@
         "in_stock_text": "",
         "profile_folder": "krit_profile",
         "headless": false,
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "Pokemon TCG - Lexshop",
@@ -54,7 +57,8 @@
         "price_selector": ".price",
         "in_stock_text": "adauga",
         "profile_folder": "lexshop_profile",
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "Pokemon TCG - Bookcity",
@@ -65,7 +69,8 @@
         "price_selector": ".price",
         "in_stock_text": "adauga in cos",
         "profile_folder": "bookcity_profile",
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "Pokemon TCG - PokeMANIA",
@@ -76,7 +81,8 @@
         "price_selector": ".product__info--price-gross",
         "in_stock_text": "",
         "profile_folder": "pokemania_profile",
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "Pokemon TCG - Bebe Tei",
@@ -88,7 +94,8 @@
         "image_selector": ".product-image-listing picture img",
         "in_stock_text": "",
         "profile_folder": "bebetei_profile",
-        "niche": "Pokemon TCG"
+        "niche": "Pokemon TCG",
+        "engine": "http"
     },
     {
         "name": "One Piece - TCG Shop",

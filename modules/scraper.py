@@ -6,6 +6,21 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 
 from modules.stock_parser import parse_stock_qty
 
+# Canalul care a mers ultima data. Fara memoria asta, pe un Pi fara Edge am
+# reincerca msedge la fiecare magazin, la fiecare ciclu — 8 esecuri pe secunda.
+_canal_functional = None
+
+
+def _canale_disponibile(site_config: dict) -> list:
+    """Canalele de incercat, in ordine. Primul care porneste castiga."""
+    global _canal_functional
+    preferat = site_config.get("browser_channel", "msedge")
+    if _canal_functional is not None:
+        # Deja stim ce merge pe masina asta.
+        return [_canal_functional]
+    return [preferat, "chromium", None]
+
+
 def check_search_page_stock(site_config: dict) -> list:
     # ── Fast-path fara browser ────────────────────────────────────────
     # Activat per site cu "engine": "http" in sites_config.json.
@@ -37,13 +52,41 @@ def check_search_page_stock(site_config: dict) -> list:
     with sync_playwright() as p:
         context = None
         try:
-            context = p.chromium.launch_persistent_context(
-                user_data_dir=user_data_dir,
-                channel="msedge", 
-                headless=is_headless, # <--- Aici aplicăm setarea dinamică
-                viewport={"width": 1280, "height": 720},
-                args=["--disable-blink-features=AutomationControlled", "--disable-infobars", "--window-position=-3000,0"]
-            )
+            # Canalul de browser. msedge e prima alegere — profilurile
+            # persistente si comportamentul anti-bot sunt calibrate pe el.
+            # DAR pe Raspberry Pi (ARM64) Edge nu exista: Microsoft nu
+            # livreaza Edge pentru arhitectura asta. Acolo cadem pe Chromium-ul
+            # livrat de Playwright, care ruleaza nativ pe ARM.
+            # Fara fallback, TOATE magazinele pe browser dau 0 produse pe Pi.
+            canale = _canale_disponibile(site_config)
+            ultima_eroare = None
+            context = None
+            for canal in canale:
+                try:
+                    optiuni = {
+                        "user_data_dir": user_data_dir,
+                        "headless": is_headless,
+                        "viewport": {"width": 1280, "height": 720},
+                        "args": ["--disable-blink-features=AutomationControlled",
+                                 "--disable-infobars", "--window-position=-3000,0"],
+                    }
+                    if canal:
+                        optiuni["channel"] = canal
+                    context = p.chromium.launch_persistent_context(**optiuni)
+                    global _canal_functional
+                    if _canal_functional is None and canal != canale[0]:
+                        logging.warning(
+                            f"⚠️ Canalul '{canale[0]}' nu e disponibil pe masina asta. "
+                            f"Trec pe '{canal or 'chromium'}' pentru toate magazinele."
+                        )
+                    _canal_functional = canal
+                    break
+                except Exception as e:
+                    ultima_eroare = e
+                    continue
+
+            if context is None:
+                raise ultima_eroare or RuntimeError("niciun canal de browser disponibil")
             
             page = context.pages[0] if context.pages else context.new_page()
             page.goto(url, wait_until="domcontentloaded", timeout=30000)
