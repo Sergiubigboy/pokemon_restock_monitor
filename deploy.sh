@@ -26,6 +26,13 @@ PYTHON="$PROIECT/venv/bin/python"
 BACKUP="$PROIECT/.backup_stare"
 LOG="$PROIECT/bot.log"
 PIDFILE="$PROIECT/.bot.pid"
+SERVICIU="pokemon-monitor"
+
+# Daca serviciul systemd e instalat, el e seful: pornirea si oprirea trec
+# prin systemctl. Altfel cadem pe nohup, ca inainte.
+folosim_systemd() {
+  systemctl list-unit-files 2>/dev/null | grep -q "^${SERVICIU}.service"
+}
 
 # Fisiere de stare care NU au voie sa se piarda la actualizare.
 STARE=(
@@ -52,6 +59,12 @@ pid_bot() {
 }
 
 opreste() {
+  if folosim_systemd; then
+    echo "Opresc serviciul $SERVICIU..."
+    sudo systemctl stop "$SERVICIU"
+    verde "Oprit."
+    return 0
+  fi
   local pid
   pid="$(pid_bot)"
   if [ -z "$pid" ]; then
@@ -70,6 +83,18 @@ opreste() {
 }
 
 porneste() {
+  if folosim_systemd; then
+    echo "Pornesc serviciul $SERVICIU..."
+    sudo systemctl start "$SERVICIU"
+    sleep 5
+    if systemctl is-active --quiet "$SERVICIU"; then
+      verde "Pornit prin systemd."
+    else
+      rosu "Nu a pornit. Vezi: sudo journalctl -u $SERVICIU -n 40"
+      return 1
+    fi
+    return 0
+  fi
   if [ -n "$(pid_bot)" ]; then
     galben "Botul deja ruleaza (pid $(pid_bot))."
     return 0
@@ -120,6 +145,11 @@ stare() {
   local pid
   pid="$(pid_bot)"
   echo "Proiect : $PROIECT"
+  if folosim_systemd; then
+    echo "Serviciu: systemd ($(systemctl is-enabled $SERVICIU 2>/dev/null), $(systemctl is-active $SERVICIU 2>/dev/null))"
+  else
+    echo "Serviciu: neinstalat (pornire manuala)"
+  fi
   echo "Commit  : $(git rev-parse --short HEAD 2>/dev/null) $(git log -1 --format=%s 2>/dev/null | cut -c1-50)"
   if [ -n "$pid" ]; then
     verde "Bot     : RULEAZA (pid $pid, de $(ps -o etime= -p "$pid" | tr -d ' '))"
@@ -134,7 +164,10 @@ stare() {
 case "${1:-}" in
   --status) stare; exit 0 ;;
   --stop)   opreste; exit 0 ;;
-  --logs)   tail -f "$LOG"; exit 0 ;;
+  --logs)
+    if folosim_systemd; then sudo journalctl -u "$SERVICIU" -f
+    else tail -f "$LOG"; fi
+    exit 0 ;;
 esac
 
 echo "════════════════════════════════════════════"

@@ -1,0 +1,41 @@
+# Serviciu systemd pentru monitorul de restock.
+#
+# INSTALARE (pe Pi, o singura data):
+#   sudo cp ~/projects/pokemon_restock_monitor/pokemon-monitor.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now pokemon-monitor
+#
+# DUPA ASTA porneste singur la fiecare boot si se repornaste daca pica.
+
+[Unit]
+Description=Pokemon Restock Monitor
+# Asteptam reteaua: fara ea, primul ciclu ar esua pe toate magazinele.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=resellbot
+WorkingDirectory=/home/resellbot/projects/pokemon_restock_monitor
+ExecStart=/home/resellbot/projects/pokemon_restock_monitor/venv/bin/python main.py
+
+# Repornire la orice iesire, inclusiv la o exceptie neprinsa.
+Restart=always
+RestartSec=15
+
+# Daca se restarteaza de 5 ori in 10 minute, ceva e rupt de-a binelea —
+# nu are rost sa incerce la nesfarsit si sa umple logul.
+StartLimitBurst=5
+StartLimitIntervalSec=600
+
+# Logul merge in journalctl. bot.log ramane si el, scris de aplicatie.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pokemon-monitor
+
+# Playwright are nevoie de HOME ca sa gaseasca browserele descarcate.
+Environment=HOME=/home/resellbot
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
