@@ -57,7 +57,14 @@ fi
 
 if [ -n "$SERVICIU" ]; then
   echo "repornesc $SERVICIU"
-  systemctl restart "$SERVICIU"
+  # -n = fara prompt de parola. Are nevoie de regula sudoers (vezi README).
+  # Fara ea, systemctl cere autentificare si esueaza tacut, iar botul ar
+  # ramane pe codul vechi desi scriptul zice "actualizat".
+  if ! sudo -n systemctl restart "$SERVICIU" 2>/dev/null; then
+    echo "NU am putut reporni prin systemctl (lipseste regula sudoers)."
+    echo "Ruleaza: sudo tee /etc/sudoers.d/pokemon-autoupdate <<< \"resellbot ALL=(root) NOPASSWD: /bin/systemctl restart $SERVICIU\""
+    exit 1
+  fi
 else
   echo "nu am gasit serviciul; repornesc manual"
   pkill -f "$PROIECT/main.py"
