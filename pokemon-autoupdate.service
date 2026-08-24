@@ -1,0 +1,10 @@
+[Unit]
+Description=Verifica git si actualizeaza botul
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=resellbot
+WorkingDirectory=/home/resellbot/projects/pokemon_restock_monitor
+ExecStart=/home/resellbot/projects/pokemon_restock_monitor/autoupdate.sh

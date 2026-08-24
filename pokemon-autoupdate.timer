@@ -1,0 +1,12 @@
+[Unit]
+Description=Verifica git la fiecare 10 minute
+
+[Timer]
+# Prima verificare la 2 minute dupa boot, apoi din 10 in 10 minute.
+OnBootSec=2min
+OnUnitActiveSec=10min
+# Daca Pi-ul a fost oprit, recupereaza verificarea ratata la pornire.
+Persistent=true
+
+[Install]
+WantedBy=timers.target
