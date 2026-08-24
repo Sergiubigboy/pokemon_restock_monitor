@@ -40,3 +40,5 @@ config/last_notified.json
 config/product_classifications.json
 config/rejected_products.json
 config/beta.json
+.backup_stare/
+.bot.pid

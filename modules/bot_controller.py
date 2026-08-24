@@ -36,7 +36,10 @@ class MonitorState:
         self.debug_mode_all = False
         self.delay_mode     = False
         self.delay_seconds  = 40
-        self.check_interval = 3         # secunde — modificabil via /interval
+        # Secunde intre cicluri. Cu 20+ magazine si mai multe categorii pe
+        # acelasi domeniu, 3s inseamna ca lovesti un magazin de cateva ori pe
+        # secunda si te taie. 15s e ritmul sanatos la scara asta.
+        self.check_interval = 15        # modificabil via /interval
         # Evaluarea pe watchlist — pornită/oprită la cald cu /watchlist on|off.
         # E aditivă: când e ON, produsele de pe watchlist primesc în plus alerta
         # cu profit și ROI. Nimic din fluxul vechi nu dispare.
@@ -804,6 +807,8 @@ def start_bot_thread():
 
 # Ultima alerta trimisa per magazin, ca sa nu repetam acelasi mesaj.
 _ultima_alerta_site = {}
+_magazine_cazute = set()
+_ultima_alerta_agregata = 0.0
 _lock_alerte_site = threading.Lock()
 
 # Un magazin care oscileaza (fail, fail, fail, ok, fail, fail, fail...) reseteaza
@@ -813,18 +818,34 @@ RACIRE_ALERTA_SITE = 30 * 60
 
 
 def alert_site_failure(site_name: str, consecutive: int):
-    """Chemat din main.py cand un site esueaza de mai multe ori la rand."""
+    """
+    Chemat din main.py cand un magazin esueaza de mai multe ori la rand.
+
+    Agregam: cu 21 de magazine, o alerta per magazin inseamna 21 de mesaje
+    in cateva secunde. Strangem numele si trimitem UNUL singur.
+    """
     if consecutive not in (3, 10):
         return
 
     acum = time.time()
     with _lock_alerte_site:
-        ultima = _ultima_alerta_site.get(site_name, 0)
-        if (acum - ultima) < RACIRE_ALERTA_SITE:
+        _magazine_cazute.add(site_name)
+        global _ultima_alerta_agregata
+        if (acum - _ultima_alerta_agregata) < RACIRE_ALERTA_SITE:
             return
-        _ultima_alerta_site[site_name] = acum
+        _ultima_alerta_agregata = acum
+        cazute = sorted(_magazine_cazute)
+        _magazine_cazute.clear()
 
-    _broadcast(
-        f"⚠️ <b>ALERTA: {site_name}</b> — {consecutive} esecuri consecutive!\n"
-        "Site-ul poate fi down sau blocat. Verifica manual."
-    )
+    if len(cazute) == 1:
+        text = (f"⚠️ <b>{cazute[0]}</b> — esecuri repetate.\n"
+                "Site-ul poate fi down, blocat, sau selectorul s-a schimbat.")
+    else:
+        lista = chr(10).join(f"  • {n}" for n in cazute[:12])
+        text = (f"⚠️ <b>{len(cazute)} magazine cu esecuri repetate</b>" + chr(10) + lista)
+        if len(cazute) > 12:
+            text += chr(10) + f"  ... si inca {len(cazute)-12}"
+        text += (chr(10) + chr(10) + "Daca sunt de pe acelasi domeniu, cel mai probabil "
+                 "te limiteaza. Creste intervalul cu /interval.")
+
+    _broadcast(text)

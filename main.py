@@ -5,6 +5,8 @@ import time
 import argparse
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
+from urllib.parse import urlparse
 from modules.scraper import check_search_page_stock
 from modules.notifier import (send_telegram_notification, send_watchlist_alert,
                              send_set_alert)
@@ -85,6 +87,51 @@ def grupeaza_pe_nise(sites: list) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────────
+#  Lacăt per DOMENIU — regula care nu se încalcă
+# ─────────────────────────────────────────────────────────────────
+# Paralelismul e pe NIȘE, dar același magazin apare acum în mai multe nișe
+# (Redgoblin are Pokemon, One Piece, Magic, Lorcana, Yu-Gi-Oh). Fără lacătul
+# ăsta, două thread-uri de nișă loveau redgoblin.ro în aceeași secundă — exact
+# ce nu avem voie. Rezultatul măsurat pe 23 august: 91% eșec, 2783 din 3058
+# scanări. Lacătul garantează că un domeniu primește o singură cerere odată,
+# indiferent din câte nișe face parte.
+_lacate_domenii = {}
+_lacat_registru = threading.Lock()
+
+# Pauză minimă între două cereri către ACELAȘI domeniu, în secunde.
+PAUZA_PER_DOMENIU = 2.0
+_ultima_cerere = {}
+
+
+def _lacat_domeniu(url: str):
+    domeniu = urlparse(url or "").netloc or "necunoscut"
+    with _lacat_registru:
+        if domeniu not in _lacate_domenii:
+            _lacate_domenii[domeniu] = threading.Lock()
+        return domeniu, _lacate_domenii[domeniu]
+
+
+def scaneaza_cu_lacat(site: dict):
+    """
+    Scanează un magazin ținând lacătul domeniului lui.
+
+    În plus, respectă o pauză minimă între cereri către același domeniu:
+    5 categorii pe Redgoblin la 3 secunde înseamnă o cerere la 0,6s dacă nu
+    le distanțezi — și magazinul te taie.
+    """
+    domeniu, lacat = _lacat_domeniu(site.get("url"))
+    with lacat:
+        acum = time.time()
+        trecut = acum - _ultima_cerere.get(domeniu, 0)
+        if trecut < PAUZA_PER_DOMENIU:
+            time.sleep(PAUZA_PER_DOMENIU - trecut)
+        try:
+            return check_search_page_stock(site)
+        finally:
+            _ultima_cerere[domeniu] = time.time()
+
+
+# ─────────────────────────────────────────────────────────────────
 #  Brief de pret (mesaj separat, dupa alerta)
 # ─────────────────────────────────────────────────────────────────
 def trimite_brief(text: str):
@@ -108,7 +155,7 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
         logging.info(f"🔇 [{site_name}] MUTED — sărit.")
         return
 
-    found_products = check_search_page_stock(site)
+    found_products = scaneaza_cu_lacat(site)
 
     # ── Inităm site-ul dacă e prima dată când apare ──
     if site_name not in known_products:
