@@ -21,8 +21,8 @@
         "price_selector": ".price",
         "in_stock_text": "",
         "profile_folder": "redgoblin_profile",
-        "niche": "Pokemon TCG",
-        "engine": "http"
+        "headless": true,
+        "niche": "Pokemon TCG"
     },
     {
         "name": "Pokemon TCG - SMYK",
@@ -162,44 +162,8 @@
         "price_selector": ".price",
         "in_stock_text": "",
         "profile_folder": "redgoblin_profile",
-        "niche": "One Piece TCG",
-        "engine": "http"
-    },
-    {
-        "name": "Magic The Gathering - Redgoblin",
-        "url": "https://redgoblin.ro/collections/magic-the-gathering",
-        "type": "search_page",
-        "card_selector": ".productitem",
-        "title_selector": ".productitem--title",
-        "price_selector": ".price",
-        "in_stock_text": "",
-        "profile_folder": "redgoblin_profile",
-        "niche": "Magic The Gathering",
-        "engine": "http"
-    },
-    {
-        "name": "Disney Lorcana - Redgoblin",
-        "url": "https://redgoblin.ro/collections/lorcana?filter.v.availability=1",
-        "type": "search_page",
-        "card_selector": ".productitem",
-        "title_selector": ".productitem--title",
-        "price_selector": ".price",
-        "in_stock_text": "",
-        "profile_folder": "redgoblin_profile",
-        "niche": "Disney Lorcana",
-        "engine": "http"
-    },
-    {
-        "name": "Yu-Gi-Oh - Redgoblin",
-        "url": "https://redgoblin.ro/collections/yu-gi-oh",
-        "type": "search_page",
-        "card_selector": ".productitem",
-        "title_selector": ".productitem--title",
-        "price_selector": ".price",
-        "in_stock_text": "",
-        "profile_folder": "redgoblin_profile",
-        "niche": "Yu-Gi-Oh",
-        "engine": "http"
+        "headless": true,
+        "niche": "One Piece TCG"
     },
     {
         "name": "One Piece TCG - Lexshop",
