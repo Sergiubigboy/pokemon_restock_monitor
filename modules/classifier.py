@@ -42,7 +42,8 @@ NICHE_RULES_FILE = os.path.join("config", "niche_rules.json")
 # Creste-l ori de cate ori se schimba regulile locale de tip sau de set.
 # Clasificarile salvate cu alta versiune se uita la pornire si se recalculeaza.
 #   v2: "huse" ca accesoriu + codurile de set One Piece (OP-15, PRB-02, ...)
-VERSIUNE_REGULI = 2
+#   v3: tipul "figurina" + merch-ul cu licenta (caiete, pixuri, cani, Funko)
+VERSIUNE_REGULI = 3
 
 MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 MAX_NUME_PER_APEL = 40
@@ -134,13 +135,23 @@ _TIPARE_TIP = [
     # "huse" (pluralul lui "husa") lipsea: HobbyGames isi numeste sleeve-urile
     # "Joc de carti One Piece - Huse oficiale pentru carti", deci treceau drept
     # tip nedeterminat si plecau ca semnalare.
+    # Merch-ul cu licenta sta in aceleasi categorii ca marfa sigilata: pe
+    # cautarea "one piece" de pe Bookcity ies 26 de pixuri, caiete si Funko-uri
+    # la 3 produse de joc. Un tip nedeterminat pleaca mai departe ca semnalare,
+    # deci fara regulile astea zgomotul ajunge la tine. Niciun tip de aici nu e
+    # pe lista vreunei nise, deci policy.decide le trece direct pe TACERE.
+    ("figurina",        ["figurina", "figurine", "funko", "nendoroid",
+                         "statueta", "action figure"]),
     # Potrivirea e pe granita de cuvant, deci "sleeve" NU prinde "sleeves" —
     # de aceea pluralele sunt scrise separat. "plicuri" e cum isi numeste
     # HobbyGames pachetele de huse ("70 de plicuri"); chiar daca ar nimeri un
     # booster pack, tipul ala e oricum ignorat pe toate nisele.
     ("accesoriu",       ["sleeve", "sleeves", "binder", "portfolio", "playmat",
                          "album", "deck box", "breloc", "husa", "huse",
-                         "plicuri", "card case", "folie protectie", "folii"]),
+                         "plicuri", "card case", "folie protectie", "folii",
+                         "notebook", "caiet", "sticla termica", "cana",
+                         "tricou", "roller", "penar", "rucsac", "sosete",
+                         "puzzle", "glob"]),
     ("plus",            ["plus ", "plush", "jucarie de plus"]),
     ("single_card",     ["carte single", "single card", "graded card"]),
     # Cel mai general la final: un "booster" ramas dupa toate testele de mai

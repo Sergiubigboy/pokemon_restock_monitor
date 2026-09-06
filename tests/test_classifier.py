@@ -371,5 +371,37 @@ class TestAccesoriiRomanesti(BazaClasificator):
             "accesoriu")
 
 
+class TestMerchLicentiat(BazaClasificator):
+    """
+    Cautarea "one piece" de pe Bookcity intoarce 26 de pixuri, caiete si
+    Funko-uri la 3 produse de joc. Un tip nedeterminat pleaca mai departe ca
+    semnalare, deci fara regulile astea zgomotul ajunge pe canal.
+    """
+
+    def test_figurine(self):
+        for nume in ("Funko POP TV - One Piece S1 - Sanji",
+                     "Figurina One Piece Gol D. Roger Battle Record Collection",
+                     "Mini figurina surpriza, One Piece, S1"):
+            self.assertEqual(classifier.detecteaza_tip_local(nume), "figurina", nume)
+
+    def test_papetarie_si_obiecte(self):
+        for nume in ("Notebook - One Piece : Tony Tony Chopper",
+                     "Sticla termica - One Piece : Chopper",
+                     "Roller Frixion Plus 0.7 mm negru - One Piece",
+                     "Glob cadou cu set monede Berry - One Piece"):
+            self.assertEqual(classifier.detecteaza_tip_local(nume), "accesoriu", nume)
+
+    def test_marfa_reala_nu_e_prinsa(self):
+        # Regulile de merch sunt testate DUPA tipurile de marfa sigilata.
+        # "Premium Card Collection ... Vol. 5" nu are voie sa devina accesoriu.
+        self.assertEqual(
+            classifier.detecteaza_tip_local(
+                "One Piece Card Game: Premium Card Collection - Best Selection Vol. 5"),
+            "collection_box")
+        self.assertEqual(
+            classifier.detecteaza_tip_local("One Piece Card Game OP-17 Booster Box"),
+            "booster_box")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
