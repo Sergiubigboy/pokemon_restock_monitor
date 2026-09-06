@@ -27,7 +27,10 @@ class TestBuclaDeScanare(unittest.TestCase):
 
     def setUp(self):
         self.watchlist = _watchlist_test()
-        self.known = {}
+        # Magazinul e deja cunoscut (raft gol, dar cunoscut). Fara asta, fiecare
+        # test ar cadea pe ramura "prima scanare", care memoreaza fara sa
+        # notifice — vezi test_prima_scanare_nu_notifica_nimic.
+        self.known = {KRIT: set()}
         self.vip_groups = [{"keywords": ["booster box"], "message": "SUPER DROP"}]
         self.blacklist = ["sleeve", "breloc"]
 
@@ -129,6 +132,31 @@ class TestBuclaDeScanare(unittest.TestCase):
         self._scaneaza([produs("Pokemon Sleeve Protector", "29,99 lei")])
         self.assertEqual(self.m["send_telegram_notification"].call_count, 0)
         self.assertEqual(self.m["send_watchlist_alert"].call_count, 0)
+
+    def test_prima_scanare_nu_notifica_nimic(self):
+        # Magazin nou = niciun "data trecuta", deci nimic nu poate fi restock.
+        # Fara regula asta, ziua in care adaugi un magazin iti trimite tot
+        # catalogul lui deodata.
+        self.known.pop(KRIT)
+        self._scaneaza([
+            produs("Pokemon 30th Celebration Elite Trainer Box", "289,00 lei"),
+            produs("Pokemon Booster Box Oarecare", "499,00 lei"),
+        ])
+        self.assertEqual(self.m["send_watchlist_alert"].call_count, 0)
+        self.assertEqual(self.m["send_telegram_notification"].call_count, 0)
+        # Dar raftul e memorat, ca ciclul urmator sa aiba cu ce compara.
+        memorate = {c.args[2] for c in self.m["add_product"].call_args_list}
+        self.assertIn("pokemon 30th celebration elite trainer box", memorate)
+        self.assertIn("pokemon booster box oarecare", memorate)
+
+    def test_produs_epuizat_nu_se_memoreaza(self):
+        # Marcat de scraper cu in_stoc=False. Daca l-am tine minte, revenirea
+        # lui in stoc n-ar mai fi "produs nou" si n-ai primi alerta.
+        p = produs("One Piece OP-17 Booster Box", "624,99 lei")
+        p["in_stoc"] = False
+        self._scaneaza([p])
+        self.assertEqual(self.m["send_telegram_notification"].call_count, 0)
+        self.assertEqual(self.m["add_product"].call_count, 0)
 
     def test_produs_deja_cunoscut_nu_se_renotifica(self):
         p = produs("Pokemon 30th Celebration Elite Trainer Box", "289,00 lei")
@@ -271,7 +299,9 @@ class TestClasificatorInBucla(unittest.TestCase):
 
         site = {"name": KRIT, "url": "https://krit.ro/x", "niche": "Pokemon TCG"}
         with mock.patch.object(main, "check_search_page_stock", return_value=produse),              mock.patch.object(self.classifier, "_apeleaza_gemini", side_effect=gemini_fals),              mock.patch.dict(os.environ, {"GEMINI_API_KEY": "fals"}):
-            main.scaneaza_site(site, {}, [], [], {}, False)
+            # KRIT trebuie sa fie deja cunoscut: prima scanare a unui magazin
+            # nou doar memoreaza raftul, fara sa notifice.
+            main.scaneaza_site(site, {KRIT: set()}, [], [], {}, False)
 
     def test_produsul_irelevant_e_filtrat(self):
         nume = "Pokemon Blister Pack Oarecare"
@@ -304,7 +334,9 @@ class TestClasificatorInBucla(unittest.TestCase):
         site = {"name": KRIT, "url": "https://krit.ro/x", "niche": "Pokemon TCG"}
         with mock.patch.object(main, "check_search_page_stock",
                                return_value=[produs(nume, "99 lei")]),              mock.patch.dict(os.environ, {"GEMINI_API_KEY": ""}):
-            main.scaneaza_site(site, {}, [], [], {}, False)
+            # KRIT trebuie sa fie deja cunoscut: prima scanare a unui magazin
+            # nou doar memoreaza raftul, fara sa notifice.
+            main.scaneaza_site(site, {KRIT: set()}, [], [], {}, False)
         self.assertEqual(self.m["send_telegram_notification"].call_count, 1,
                          "fara clasificare, produsul trebuie sa treaca pe fluxul vechi")
 

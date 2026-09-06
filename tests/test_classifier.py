@@ -312,5 +312,64 @@ class TestCollectorVsPlay(BazaClasificator):
             "play_booster_box")
 
 
+class TestCoduriOnePiece(BazaClasificator):
+    """
+    Magazinele romanesti scriu codul de set in trei feluri: "OP-17", "OP - 17"
+    si "OP17". Fara normalizare, doar primul se potrivea cu cheia din
+    set_intelligence, deci acelasi display era tier S intr-un magazin si set
+    necunoscut in altul.
+    """
+
+    SETURI = ["op-17", "op-15", "world's strongest warriors"]
+
+    def test_toate_scrierile_dau_acelasi_set(self):
+        for nume in ("One Piece Card Game OP-17 Booster Box",
+                     "Set cartonase One Piece TCG OP - 17 Booster Box",
+                     "One Piece TCG OP17 Booster Box"):
+            self.assertEqual(
+                classifier.detecteaza_set_local(nume, seturi=self.SETURI,
+                                                nisa="One Piece TCG"),
+                "op-17", nume)
+
+    def test_codul_necercetat_ramane_ca_discriminant(self):
+        # OP-09 nu e in research, dar codul tine id-ul canonic distinct — altfel
+        # un "Bad" pe el ar bloca toate display-urile One Piece.
+        self.assertEqual(
+            classifier.detecteaza_set_local("One Piece TCG OP - 09 Booster Box",
+                                            seturi=self.SETURI, nisa="One Piece TCG"),
+            "op-09")
+
+    def test_alte_prefixe(self):
+        for nume, astept in (("One Piece TCG PRB 02 Premium Booster Box", "prb-02"),
+                             ("One Piece Card Game ST44 - Starter Deck", "st-44"),
+                             ("One Piece TCG DP - 07 Double Pack Set", "dp-07")):
+            self.assertEqual(
+                classifier.detecteaza_set_local(nume, seturi=self.SETURI,
+                                                nisa="One Piece TCG"), astept, nume)
+
+    def test_codul_nu_se_aplica_pe_alte_nise(self):
+        # "ST 12" dintr-un nume Pokemon nu are voie sa devina set.
+        self.assertEqual(
+            classifier.detecteaza_set_local("Pokemon Figurina ST 12 cm",
+                                            seturi=self.SETURI, nisa="Pokemon TCG"),
+            "")
+
+
+class TestAccesoriiRomanesti(BazaClasificator):
+    """HobbyGames isi numeste sleeve-urile "Huse oficiale pentru carti"."""
+
+    def test_huse_la_plural(self):
+        self.assertEqual(
+            classifier.detecteaza_tip_local(
+                "Joc de carti One Piece - Huse oficiale pentru carti vol. 16"),
+            "accesoriu")
+
+    def test_playmat_si_card_case(self):
+        self.assertEqual(
+            classifier.detecteaza_tip_local(
+                "One Piece Card Game - Playmat and Card Case Set - Yamato"),
+            "accesoriu")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

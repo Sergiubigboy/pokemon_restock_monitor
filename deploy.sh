@@ -47,6 +47,13 @@ STARE=(
   "config/alert_counts.json"
   "config/muted_sites.json"
   "config/beta.json"
+)
+
+# Fisiere urmarite de git pe care si tools/descopera_categorii.py le modifica
+# local. Se pun la loc DOAR daca pull-ul le-a sters, niciodata peste o versiune
+# noua venita din git — altfel un magazin adaugat sau scos de pe laptop n-ar
+# ajunge niciodata pe Pi. Asa face si autoupdate.sh.
+STARE_DOAR_DACA_LIPSESTE=(
   "config/sites_config.json"
 )
 
@@ -121,7 +128,7 @@ salveaza_stare() {
   rm -rf "$BACKUP"
   mkdir -p "$BACKUP/config"
   local n=0
-  for f in "${STARE[@]}"; do
+  for f in "${STARE[@]}" "${STARE_DOAR_DACA_LIPSESTE[@]}"; do
     [ -f "$f" ] && { cp -p "$f" "$BACKUP/$f"; n=$((n+1)); }
   done
   echo "Salvat $n fisiere de stare."
@@ -136,6 +143,12 @@ restaureaza_stare() {
         cp -p "$BACKUP/$f" "$f"
         n=$((n+1))
       fi
+    fi
+  done
+  for f in "${STARE_DOAR_DACA_LIPSESTE[@]}"; do
+    if [ -f "$BACKUP/$f" ] && [ ! -f "$f" ]; then
+      cp -p "$BACKUP/$f" "$f"
+      n=$((n+1))
     fi
   done
   [ "$n" -gt 0 ] && galben "Am pus la loc $n fisiere de stare." || echo "Starea a ramas neatinsa."

@@ -21,6 +21,18 @@ _SPATII = ("\xa0", " ", " ", "\t")
 # Se opreste automat la prima litera ("289 lei" -> "289").
 _RE_NUMAR = re.compile(r"\d+(?:[.,\s]\d+)*")
 
+# Zecimale scrise in <sup>, fara virgula: HobbyGames scrie 53<sup>58</sup>RON,
+# iar get_text() scoate "53 58 RON". Fara regula asta pretul iese 5358 —
+# de o suta de ori mai mare, deci orice produs ar parea o afacere uriasa.
+#
+# Conditia e stricta ca sa nu strice preturile cu spatiu ca separator de mii:
+# grupul al doilea trebuie sa aiba EXACT doua cifre si sa fie urmat imediat de
+# moneda. "1 250 RON" nu se potriveste (trei cifre), "1 017 50 RON" da si
+# devine corect 1017,50.
+_RE_ZECIMALE_SUP = re.compile(
+    r"(\d)\s+(\d{2})\s*(lei|ron)\b", re.IGNORECASE
+)
+
 
 def _bloc_la_float(brut: str) -> float | None:
     """Converteste un bloc numeric deja extras (ex: "1.017,00") in float."""
@@ -103,6 +115,9 @@ def parse_price_ron(text) -> float | None:
     # Krit). Lipim separatorul de cifre. Spatiile care NU sunt langa un . sau ,
     # raman neatinse, ca "1 017,00" sa fie in continuare o mie saptesprezece.
     normalizat = re.sub(r"\s*([.,])\s*", r"\1", normalizat)
+
+    # "53 58 RON" (zecimale in <sup>) -> "53,58 RON".
+    normalizat = _RE_ZECIMALE_SUP.sub(r"\1,\2 \3", normalizat)
 
     potrivire = _RE_NUMAR.search(normalizat)
     if not potrivire:

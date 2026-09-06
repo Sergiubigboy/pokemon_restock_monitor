@@ -153,6 +153,20 @@ class TestTextMurdar(unittest.TestCase):
         self.assertEqual(parse_price_ron(289), 289.0)
         self.assertEqual(parse_price_ron(289.5), 289.5)
 
+    def test_zecimale_in_sup_hobbygames(self):
+        # HobbyGames scrie 53<sup>58</sup>RON. get_text() da "53 58 RON".
+        # Citit gresit, pretul iese 5358 si orice produs pare o afacere uriasa.
+        self.assertEqual(parse_price_ron("53 58 RON"), 53.58)
+        self.assertEqual(parse_price_ron("Preț 120 56 RON"), 120.56)
+        self.assertEqual(parse_price_ron("349 00 RON"), 349.0)
+        self.assertEqual(parse_price_ron("1 017 50 RON"), 1017.50)
+
+    def test_spatiul_ramane_separator_de_mii(self):
+        # Regula de mai sus cere EXACT doua cifre inainte de moneda, tocmai ca
+        # sa nu transforme miile in zecimale.
+        self.assertEqual(parse_price_ron("1 250 RON"), 1250.0)
+        self.assertEqual(parse_price_ron("34 903 RON"), 34903.0)
+
 
 class TestFormatRon(unittest.TestCase):
     """Helper de afisare folosit in mesajele Telegram."""

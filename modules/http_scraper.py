@@ -84,6 +84,22 @@ def _extrage_link(card, link_selector: str | None) -> str | None:
     return None
 
 
+def _lista_text(valoare) -> list:
+    """
+    Normalizeaza "out_of_stock_text": accepta si un sir, si o lista de siruri.
+
+    Exista pentru magazinele care afiseaza si produsele epuizate in categorie
+    (Gomag: "Stoc epuizat", "Indisponibil"). Fata de "in_stock_text", filtrul
+    negativ nu goleste pagina cand TOT stocul e epuizat — asa ca nu declanseaza
+    fals alarma de "site cazut"; pur si simplu nu are ce raporta.
+    """
+    if not valoare:
+        return []
+    if isinstance(valoare, str):
+        valoare = [valoare]
+    return [str(v).lower().strip() for v in valoare if str(v).strip()]
+
+
 def check_search_page_stock_http(site_config: dict) -> list:
     """
     Aceeasi semnatura si acelasi format de iesire ca
@@ -98,6 +114,7 @@ def check_search_page_stock_http(site_config: dict) -> list:
     image_selector = site_config.get("image_selector", "img")
     qty_selector = site_config.get("qty_selector")
     in_stock_text = site_config.get("in_stock_text", "").lower()
+    out_of_stock_text = _lista_text(site_config.get("out_of_stock_text"))
     timeout = site_config.get("http_timeout", TIMEOUT_IMPLICIT)
 
     antet = dict(ANTET_IMPLICIT)
@@ -136,11 +153,21 @@ def check_search_page_stock_http(site_config: dict) -> list:
         )
         return []
 
+    epuizate = 0
+
     for card in carduri:
         text_card = _text(card)
+        text_jos = text_card.lower()
 
-        if in_stock_text and in_stock_text not in text_card.lower():
+        if in_stock_text and in_stock_text not in text_jos:
             continue
+
+        # Produsele epuizate NU se arunca aici: pleaca mai departe marcate cu
+        # in_stoc=False. main.py le numara ca pagina citita corect (deci fara
+        # alarma de "site cazut" cand tot raftul e gol), dar nu le tine minte —
+        # asa incat revenirea lor in stoc sa fie un produs nou, cu alerta.
+        in_stoc = not any(marca in text_jos for marca in out_of_stock_text)
+        epuizate += not in_stoc
 
         p_name = _text(_primul(card, title_selector)) or "Necunoscut"
         p_price = _text(_primul(card, price_selector)) or "N/A"
@@ -174,6 +201,13 @@ def check_search_page_stock_http(site_config: dict) -> list:
             "image": p_img,
             "price": p_price,
             "qty": p_qty,
+            "in_stoc": in_stoc,
         })
+
+    if epuizate:
+        logging.info(
+            f"📦 [{name}] {len(produse_disponibile) - epuizate} in stoc, "
+            f"{epuizate} epuizate (nu se retin, ca sa alerteze la revenire)."
+        )
 
     return produse_disponibile

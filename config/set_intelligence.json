@@ -3,21 +3,23 @@
     "descriere": "Ce SETURI merita, aflat prin research INAINTE de drop. Rescris saptamanal de agentul Claude.",
     "regula_tier": "S = cumpara orice din set. A = cumpara tipurile urmarite. B = doar la pret bun. C = nu trimite nimic.",
     "regula_surse": "Niciun set fara sursa verificabila. Fara sursa = nu exista.",
-    "generat_la": "2026-08-27",
-    "generat_de": "agent-research",
-    "valid_until": "2026-09-03"
+    "generat_la": "2026-09-06",
+    "generat_de": "agent-research (fuzionat peste evaluarile lui Sergiu)",
+    "valid_until": "2026-09-13",
+    "regula_conflict": "Cand research-ul contrazice o evaluare marcata 'evaluare Sergiu', tier-ul ACTIV ramane al tau. Research-ul se pastreaza in _conflict_research, ca sa poti decide cu ambele in fata."
   },
   "Pokemon TCG": {
     "30th celebration": {
       "tier": "S",
       "categorie": "lansare_viitoare",
       "lanseaza_la": "2026-09-16",
-      "motiv": "Set aniversar 30 ani, prima lansare globala simultana din istoria TCG-ului; primul val de preorder pe Pokemon Center (15 iulie) s-a epuizat integral in aceeasi zi, cu cozi de 4-6 ore si storefront cazut.",
+      "motiv": "Set aniversar de 30 de ani, primul cu lansare simultana mondiala intr-o singura zi; primele valuri de precomanda s-au epuizat rapid, alocarea merge in ferestre succesive pana in decembrie.",
       "surse": [
+        "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/",
         "https://cardlines.com/30th-celebration-preorders-what-went-live-what-sold-out-what-comes-next/",
-        "https://www.misprint.com/posts/pokemon-tcg-release-schedule-late-2026"
+        "https://tcgdropradar.com/pokemon-30th-celebration/"
       ],
-      "verificat_la": "2026-08-27",
+      "verificat_la": "2026-08-30",
       "actiune": "Lineup-ul EN nu are booster box standalone. Produse de baza 16 sept, Booster Bundle 2 oct, Ultra-Premium Collections 6 nov ($179.99). UPC-urile sunt nivelul cu adevarat limitat — la Celebrations 2021 restul s-a reimprimat la capacitate maxima si a revenit pe raft in cateva luni."
     },
     "prismatic evolutions": {
@@ -35,13 +37,13 @@
       "tier": "A",
       "categorie": "lansare_viitoare",
       "lanseaza_la": "2026-11-06",
-      "motiv": "ME06, ultima expansiune principala din 2026, cap de afis Mega Rayquaza ex, 113 carti. ETB-urile la preorder deja epuizate la retaileri de nisa, cu limite de 3/client.",
+      "motiv": "Ultima expansiune principala a erei Mega Evolution (ME6, cod DLR), cu Mega Rayquaza ex cap de afis; final de serie, fara semnal public de tiraj.",
       "surse": [
-        "https://www.misprint.com/posts/pokemon-tcg-release-schedule-late-2026",
-        "https://www.pokebeach.com/2026/08/delta-reign-tcg-set-officially-revealed-for-november-full-product-lineup",
-        "https://pokemonplug.com/collections/me06-delta-reign"
+        "https://www.pokemon.com/us/news/the-pokemon-tcg-mega-evolution-delta-reign-expansion-arrives-november-6-2026",
+        "https://press.pokemon.com/en/MEDIA-ALERT-New-Pokemon-Trading-Card-Game-Mega-EvolutionDelta-Reign-Ex",
+        "https://bulbapedia.bulbagarden.net/wiki/Delta_Reign_(TCG)"
       ],
-      "verificat_la": "2026-08-27",
+      "verificat_la": "2026-08-30",
       "actiune": "CORECTIE fata de saptamana trecuta: sursele il descriu ca al saselea set al erei Mega Evolution si ultimul set principal AL ANULUI, nu ultimul al erei. Teza de final-de-era nu se sustine."
     },
     "pitch black": {
@@ -52,7 +54,17 @@
         "evaluare Sergiu 2026-08-19",
         "stoc observat pe 5 magazine RO"
       ],
-      "verificat_la": "2026-08-19"
+      "verificat_la": "2026-08-19",
+      "_conflict_research": {
+        "tier_research": "A",
+        "motiv": "ETB-urile se epuizeaza in minute la fiecare restock la Target, Walmart si Best Buy.",
+        "surse": [
+          "https://mypokescan.com/blog/pitch-black-restock",
+          "https://tcgdropradar.com/set/pitch-black/"
+        ],
+        "verificat_la": "2026-08-30",
+        "_nota": "Tier-ul activ ramane cel din evaluarea ta pe piata RO. Research-ul e din surse US/JP, unde stocul se comporta altfel."
+      }
     },
     "chaos rising": {
       "tier": "C",
@@ -61,7 +73,17 @@
       "surse": [
         "evaluare Sergiu 2026-08-19"
       ],
-      "verificat_la": "2026-08-19"
+      "verificat_la": "2026-08-19",
+      "_conflict_research": {
+        "tier_research": "B",
+        "motiv": "Expansiune principala normala (ME04), fara semnal documentat de penurie sau supraoferta.",
+        "surse": [
+          "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/",
+          "https://tcgradar.eu/guides/pokemon-tcg-set-release-calendar-2026"
+        ],
+        "verificat_la": "2026-08-30",
+        "_nota": "Tier-ul activ ramane cel din evaluarea ta pe piata RO. Research-ul e din surse US/JP, unde stocul se comporta altfel."
+      }
     },
     "perfect order": {
       "tier": "C",
@@ -70,42 +92,68 @@
       "surse": [
         "evaluare Sergiu 2026-08-19"
       ],
-      "verificat_la": "2026-08-19"
+      "verificat_la": "2026-08-19",
+      "_conflict_research": {
+        "tier_research": "B",
+        "motiv": "Expansiune principala normala (ME03), fara semnal documentat de penurie sau supraoferta.",
+        "surse": [
+          "https://www.dexerto.com/pokemon/pokemon-tcg-release-2629243/",
+          "https://pokecottage.com/pokemon-set-release-calendar"
+        ],
+        "verificat_la": "2026-08-30",
+        "_nota": "Tier-ul activ ramane cel din evaluarea ta pe piata RO. Research-ul e din surse US/JP, unde stocul se comporta altfel."
+      }
+    },
+    "ascended heroes": {
+      "tier": "C",
+      "categorie": "evitat",
+      "lanseaza_la": "2026-01-30",
+      "motiv": "Prioritizat public pentru reimprimare, cu valuri repetate de restock in 2026 si tinuri cu promo-uri reimprimate lansate pe 28 august 2026. Oferta creste continuu.",
+      "surse": [
+        "https://mypokescan.com/blog/ascended-heroes-restock-tracker",
+        "https://tcgreserve.com/blogs/news/ascended-heroes-tins-august-28-date-are-they-worth-it",
+        "https://www.wargamer.com/pokemon-trading-card-game/ascended-heroes-pre-orders"
+      ],
+      "verificat_la": "2026-08-30"
     }
   },
   "One Piece TCG": {
     "world's strongest warriors": {
-      "tier": "A",
-      "categorie": "lansare_viitoare",
+      "tier": "S",
+      "categorie": "istoric_dovedit",
       "lanseaza_la": "2026-08-28",
-      "motiv": "OP-17, set pozitionat pe aniversarea de 4 ani a jocului. Editia JP a iesit pe 22 august la MSRP ¥5.760/display, iar in weekendul de lansare display-urile JP se cereau ¥15.700-18.000, aproximativ 3x MSRP.",
+      "motiv": "Setul evenimentului aniversar de 4 ani. Display-urile japoneze s-au epuizat, precomenzile la retaileri s-au inchis epuizate, iar pretul de precomanda a urcat de la ~120 USD la peste 300 USD pe teama de alocare.",
       "surse": [
-        "https://samuraiswordtokyo.com/blogs/news/op-17-release-date-card-list-pre-order-guide",
-        "https://www.rarerip.com/one-piece-release/op-17"
+        "https://en.onepiece-cardgame.com/events/store-tournament-op17.html",
+        "https://www.thornberrymedia.com/post/how-much-will-one-piece-op-17-cost-at-release-booster-box-prices",
+        "https://samuraiswordtokyo.com/blogs/news/op-17-english-release-date-pre-release-guide"
       ],
-      "verificat_la": "2026-08-27",
+      "verificat_la": "2026-08-30",
       "actiune": "CORECTIE: nu e lansare mondiala simultana — JP 22 august, EN 28 august, doua date distincte. Nicio sursa nu documenteaza penurie de alocare pe editia EN. Display-uri doar la pret de lista."
     },
     "op-17": {
-      "tier": "A",
-      "categorie": "lansare_viitoare",
+      "tier": "S",
+      "categorie": "istoric_dovedit",
       "lanseaza_la": "2026-08-28",
-      "motiv": "Acelasi set ca 'World's Strongest Warriors', listat de multe magazine dupa cod.",
+      "motiv": "Setul evenimentului aniversar de 4 ani. Display-urile japoneze s-au epuizat, precomenzile la retaileri s-au inchis epuizate, iar pretul de precomanda a urcat de la ~120 USD la peste 300 USD pe teama de alocare.",
       "surse": [
-        "https://samuraiswordtokyo.com/blogs/news/op-17-release-date-card-list-pre-order-guide"
+        "https://en.onepiece-cardgame.com/events/store-tournament-op17.html",
+        "https://www.thornberrymedia.com/post/how-much-will-one-piece-op-17-cost-at-release-booster-box-prices",
+        "https://samuraiswordtokyo.com/blogs/news/op-17-english-release-date-pre-release-guide"
       ],
-      "verificat_la": "2026-08-27"
+      "verificat_la": "2026-08-30"
     },
     "op-18": {
       "tier": "B",
       "categorie": "lansare_viitoare",
       "lanseaza_la": "2026-11-20",
-      "motiv": "127 tipuri de carti pe trei teme consacrate plus una noua. Data provine din listari de preorder UK/internationale, nu dintr-un street date oficial Bandai — poate aluneca o saptamana-doua.",
+      "motiv": "Data e estimare de retailer, neconfirmata de Bandai; 127 de tipuri de carti scurse, fara semnal de tiraj sau alocare deocamdata.",
       "surse": [
-        "https://www.rarerip.com/one-piece-release/op-18",
-        "https://pixel-hub.co.uk/blogs/news/one-piece-op-18-uk"
+        "https://onepiecetopdecks.com/leaks-op-18-november-2026/",
+        "https://pixel-hub.co.uk/blogs/news/one-piece-op-18-uk",
+        "https://www.universetcg.com/blogs/news/one-piece-card-game-op-18-pre-order-guide-not-the-same-as-eb-06"
       ],
-      "verificat_la": "2026-08-27"
+      "verificat_la": "2026-08-30"
     },
     "the time of battle": {
       "tier": "B",
@@ -124,6 +172,28 @@
         "https://www.rarerip.com/one-piece-release/op-16"
       ],
       "verificat_la": "2026-08-19"
+    },
+    "op-15": {
+      "tier": "B",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "2026-04-03",
+      "motiv": "Set principal normal, a inclus a doua jumatate a cartilor EB-04; fara semnal documentat de penurie sau supraoferta.",
+      "surse": [
+        "https://www.tcgroupau.com.au/blogs/news/one-piece-card-game-op-15-release-date-japan-english-set-details-what-to-expect",
+        "https://opboxindex.com/articles/one-piece-set-list-release-dates.html"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "adventure on the island of the gods": {
+      "tier": "B",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "2026-04-03",
+      "motiv": "Set principal normal, a inclus a doua jumatate a cartilor EB-04; fara semnal documentat de penurie sau supraoferta.",
+      "surse": [
+        "https://www.tcgroupau.com.au/blogs/news/one-piece-card-game-op-15-release-date-japan-english-set-details-what-to-expect",
+        "https://opboxindex.com/articles/one-piece-set-list-release-dates.html"
+      ],
+      "verificat_la": "2026-08-30"
     }
   },
   "Riftbound": {
@@ -131,25 +201,25 @@
       "tier": "B",
       "categorie": "lansare_viitoare",
       "lanseaza_la": "2026-10-23",
-      "motiv": "Set 5, 180 carti (66 Showcase), capstone competitiv al anului — Regional Championships din noiembrie si Convergence Fest in decembrie, plus o carte Ultimate Rare noua. Preorderurile de Booster Box sunt inca larg disponibile la Miniature Market, Tier Zero, Crypt MTG si Trading Card Market.",
+      "motiv": "Al treilea set principal din 2026, 180 de carti (Seraphine, Evelynn, Ekko, Ziggs, Jarvan IV). Cadenta stabila de un set la trei luni, fara semnal public de tiraj limitat.",
       "surse": [
-        "https://playriftbound.com/en-us/news/announcements/products-and-sets-into-2027/",
-        "https://www.miniaturemarket.com/Riftbound-TCG-Radiance-Booster-Box-24-Preorder/UVSRB05BD01-BOX",
-        "https://tierzerogames.com/en-us/products/riftbound-radiance-set-5-booster-box"
+        "https://articles.starcitygames.com/riftbound/riftbound-2026-set-release-schedule/",
+        "https://www.invenglobal.com/articles/20181/riot-games-reveals-riftbound-2026-roadmap-with-new-card-sets-competitive-events-and-languages",
+        "https://www.wargamer.com/riftbound-league-of-legends-trading-card-game/riftbound-release-schedule"
       ],
-      "verificat_la": "2026-08-27",
+      "verificat_la": "2026-08-30",
       "actiune": "RETROGRADAT A -> B. Teza 'preorder epuizat' din saptamana trecuta nu se confirma: stocul de preorder e disponibil la cel putin patru retaileri. Pre-Rift 16-22 oct."
     },
     "vendetta": {
       "tier": "B",
       "categorie": "istoric_dovedit",
       "lanseaza_la": "2026-07-31",
-      "motiv": "Set 4, pe piata de aproape o luna. Niciun semnal de alocare stransa in sursele oficiale.",
+      "motiv": "Prima lansare Riftbound cu paritate globala (engleza si chineza simplificata simultan); fara semnal documentat de penurie.",
       "surse": [
-        "https://playriftbound.com/en-us/news/announcements/products-and-sets-into-2027/",
-        "https://www.wargamer.com/riftbound-league-of-legends-trading-card-game/riftbound-release-schedule"
+        "https://www.wargamer.com/riftbound-league-of-legends-trading-card-game/riftbound-release-schedule",
+        "https://bleedingcool.com/games/riftbound-league-of-legends-tcg-reveals-next-two-sets/"
       ],
-      "verificat_la": "2026-08-27"
+      "verificat_la": "2026-08-30"
     },
     "gift of the rift": {
       "tier": "B",
@@ -160,6 +230,38 @@
         "https://playriftbound.com/en-us/news/announcements/products-and-sets-into-2027/"
       ],
       "verificat_la": "2026-08-27"
+    },
+    "origins": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Tirajul initial se incheie din iunie 2026 si pretul a urcat pe ultimele valuri, dar Riot a confirmat reimprimari care sosesc in valuri. Semnal mixt — de urmarit, nu de cumparat orbeste.",
+      "surse": [
+        "https://playriftbound.com/en-us/news/announcements/flash-promos-and-origins-reprint-updates/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "proving grounds": {
+      "tier": "C",
+      "categorie": "evitat",
+      "lanseaza_la": "",
+      "motiv": "Tirajul initial s-a epuizat imediat, dar reimprimarea e confirmata si deja soseste. Oferta creste.",
+      "surse": [
+        "https://riftboundguide.com/2026/02/24/riftbound-proving-grounds-buying-guide/",
+        "https://playriftbound.com/en-us/news/announcements/flash-promos-and-origins-reprint-updates/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "unleashed": {
+      "tier": "B",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "2026-05-08",
+      "motiv": "Primul set principal din 2026; fara semnal documentat de penurie sau supraoferta.",
+      "surse": [
+        "https://www.wargamer.com/riftbound-league-of-legends-trading-card-game/riftbound-release-schedule",
+        "https://articles.starcitygames.com/riftbound/riftbound-2026-set-release-schedule/"
+      ],
+      "verificat_la": "2026-08-30"
     }
   },
   "Magic The Gathering": {
@@ -167,25 +269,26 @@
       "tier": "A",
       "categorie": "lansare_viitoare",
       "lanseaza_la": "2026-11-13",
-      "motiv": "Sapte carti headliner semnate de mana de actori (Kirk, Spock), la aproximativ 200-250 exemplare fiecare, exclusiv in Collector Boosters. Collector Booster Box la $455 si cel mai urmarit produs din lineup.",
+      "motiv": "Cea mai mare colaborare Universes Beyond de pana acum. Alocarile de precomanda se deschid si se inchid in valuri, iar cererea e anticipata peste oferta pe Collector Booster Display si Collector Commander Decks.",
       "surse": [
-        "https://www.gamesradar.com/tabletop-gaming/mtg-star-trek-features-ultra-rare-cards-signed-by-actors-and-there-are-only-200-of-each/",
         "https://magic.wizards.com/en/products/star-trek",
-        "https://www.trackalacker.com/articles/news/magic-the-gathering-star-trek-buying-guide"
+        "https://playgroup.gg/sets/star-trek",
+        "https://www.universetcg.com/blogs/news/mtg-star-trek-complete-pre-order-guide-september-2026"
       ],
-      "verificat_la": "2026-08-27",
+      "verificat_la": "2026-08-30",
       "actiune": "DOAR Collector Booster Box. Preorder deschis din iulie."
     },
     "reality fracture": {
       "tier": "B",
       "categorie": "lansare_viitoare",
       "lanseaza_la": "2026-10-02",
-      "motiv": "Set premier standard, Collector Booster Box de 12 pachete x 15 carti, foil nou 'Facet Foil' si 500 carti Headliner serializate (sub 1% din Collector Boosters). Preorder larg disponibil la GameStop, TCGplayer si LGS-uri.",
+      "motiv": "A 113-a expansiune, finalul arcului Metronome, prerelease 25 sept - 1 oct. Set in-universe standard, fara semnal de alocare.",
       "surse": [
-        "https://magic.wizards.com/en/news/feature/collecting-reality-fracture",
-        "https://www.gamestop.com/toys-games/trading-cards/products/magic-the-gathering-reality-fracture-collector-booster-box/20035129.html"
+        "https://magic.wizards.com/en/products/reality-fracture/card-image-gallery",
+        "https://draftsim.com/mtg-reality-fracture/",
+        "https://mtgrocks.com/mtg-reality-fracture/"
       ],
-      "verificat_la": "2026-08-27"
+      "verificat_la": "2026-08-30"
     },
     "mystery booster commander edition": {
       "tier": "C",
@@ -196,7 +299,27 @@
         "https://magic.wizards.com/en/news/feature/whats-inside-mystery-booster-commander-edition",
         "https://mtgrocks.com/mtg-mystery-booster-commander-edition/"
       ],
-      "verificat_la": "2026-08-27"
+      "verificat_la": "2026-08-27",
+      "_conflict_research": {
+        "tier_research": "B",
+        "motiv": "Produs de reimprimare orientat spre Commander, fara semnal de tiraj limitat.",
+        "surse": [
+          "https://articles.starcitygames.com/magic-the-gathering/magic-the-gathering-full-set-release-schedule-for-2026/"
+        ],
+        "verificat_la": "2026-08-30",
+        "_nota": "Tier-ul activ ramane cel din evaluarea ta pe piata RO. Research-ul e din surse US/JP, unde stocul se comporta altfel."
+      }
+    },
+    "foundations commander decks": {
+      "tier": "B",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-10-02",
+      "motiv": "Deck-uri preconstruite lansate odata cu Reality Fracture; produs evergreen, tipar continuu.",
+      "surse": [
+        "https://articles.starcitygames.com/magic-the-gathering/magic-the-gathering-full-set-release-schedule-for-2026/",
+        "https://www.wargamer.com/magic-the-gathering/mtg-release-schedule"
+      ],
+      "verificat_la": "2026-08-30"
     }
   },
   "LEGO": {
@@ -320,7 +443,97 @@
       ],
       "verificat_la": "2026-08-27"
     },
-    "_nota_agent": "Brick Fanatics publica lunar lista completa de retrageri. Agentul de research trebuie sa o citeasca la fiecare rulare: https://www.brickfanatics.com/every-lego-set-retiring-this-year-and-beyond"
+    "_nota_agent": "Brick Fanatics publica lunar lista completa de retrageri. Agentul de research trebuie sa o citeasca la fiecare rulare: https://www.brickfanatics.com/every-lego-set-retiring-this-year-and-beyond",
+    "77092": {
+      "tier": "S",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Epuizat complet pe LEGO Shop SUA, cu limita de trei bucati per client inainte de epuizare, retragere definitiva pe 31 iulie 2026 si cerere amplificata de anuntul remake-ului Ocarina of Time pe Switch 2.",
+      "surse": [
+        "https://www.brickfanatics.com/lego-zelda-deku-tree-sells-out-in-us-ahead-of-rumoured-2026-set",
+        "https://stonewars.com/news/lego-end-of-life-2026-midyear/",
+        "https://gamerant.com/lego-zelda-great-deku-tree-sold-out/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "great deku tree": {
+      "tier": "S",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Epuizat complet pe LEGO Shop SUA, cu limita de trei bucati per client inainte de epuizare, retragere definitiva pe 31 iulie 2026 si cerere amplificata de anuntul remake-ului Ocarina of Time pe Switch 2.",
+      "surse": [
+        "https://www.brickfanatics.com/lego-zelda-deku-tree-sells-out-in-us-ahead-of-rumoured-2026-set",
+        "https://stonewars.com/news/lego-end-of-life-2026-midyear/",
+        "https://gamerant.com/lego-zelda-great-deku-tree-sold-out/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "75419": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-10-01",
+      "motiv": "Set UCS de 9.023 piese la 999,99 USD, acces anticipat pentru LEGO Insiders pe 1 octombrie si disponibilitate generala din 4 octombrie, plus cadou TIE Fighter intre 1 si 7 octombrie. Fereastra de lansare esalonata.",
+      "surse": [
+        "https://www.tomsguide.com/entertainment/legos-9-000-piece-death-star-launches-october-1-and-nothing-in-my-lego-star-wars-collection-compares-to-it",
+        "https://www.brickfanatics.com/lego-2026-sets-confirmed-and-rumoured"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "death star": {
+      "tier": "A",
+      "categorie": "lansare_viitoare",
+      "lanseaza_la": "2026-10-01",
+      "motiv": "Set UCS de 9.023 piese la 999,99 USD, acces anticipat pentru LEGO Insiders pe 1 octombrie si disponibilitate generala din 4 octombrie, plus cadou TIE Fighter intre 1 si 7 octombrie. Fereastra de lansare esalonata.",
+      "surse": [
+        "https://www.tomsguide.com/entertainment/legos-9-000-piece-death-star-launches-october-1-and-nothing-in-my-lego-star-wars-collection-compares-to-it",
+        "https://www.brickfanatics.com/lego-2026-sets-confirmed-and-rumoured"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "21060": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Set Architecture programat pentru retragere in decembrie 2026, fara realimentare dupa epuizarea stocului.",
+      "surse": [
+        "https://www.brickfanatics.com/every-lego-set-retiring-in-2026-august-update",
+        "https://stonewars.com/retiring-2026/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "himeji castle": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Set Architecture programat pentru retragere in decembrie 2026, fara realimentare dupa epuizarea stocului.",
+      "surse": [
+        "https://www.brickfanatics.com/every-lego-set-retiring-in-2026-august-update",
+        "https://stonewars.com/retiring-2026/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "21360": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Set LEGO Ideas programat pentru retragere in 2026; seturile Ideas nu se reimprima dupa incheierea productiei.",
+      "surse": [
+        "https://www.brickfanatics.com/every-lego-set-retiring-in-2026-august-update",
+        "https://jaysbrickblog.com/news/list-of-lego-sets-retiring-soon-in-2026-june-update/"
+      ],
+      "verificat_la": "2026-08-30"
+    },
+    "willy wonka": {
+      "tier": "A",
+      "categorie": "istoric_dovedit",
+      "lanseaza_la": "",
+      "motiv": "Set LEGO Ideas programat pentru retragere in 2026; seturile Ideas nu se reimprima dupa incheierea productiei.",
+      "surse": [
+        "https://www.brickfanatics.com/every-lego-set-retiring-in-2026-august-update",
+        "https://jaysbrickblog.com/news/list-of-lego-sets-retiring-soon-in-2026-june-update/"
+      ],
+      "verificat_la": "2026-08-30"
+    }
   },
   "Disney Lorcana": {
     "hyperia city": {
@@ -341,50 +554,6 @@
       "surse": [
         "https://articles.starcitygames.com/lorcana/dates-and-new-details-for-upcoming-disney-lorcana-releases-revealed/",
         "https://screenrant.com/disney-lorcana-all-2026-sets-release-dates-schedule/"
-      ],
-      "verificat_la": "2026-08-27"
-    }
-  },
-  "Yu-Gi-Oh": {
-    "rarity collection 5": {
-      "tier": "B",
-      "categorie": "istoric_dovedit",
-      "lanseaza_la": "2026-04-17",
-      "motiv": "RA05, produsul cu raritati garantate din 2026 si primul care introduce cartile Extended Art in TCG. Lansarea a fost amanata din 10 in 17 aprilie, dar nicio sursa nu documenteaza epuizare sau alocare sub cerere.",
-      "surse": [
-        "https://icv2.com/articles/news/view/61069/yu-gi-oh-tcg-2026-product-release-calendar",
-        "https://www.konami.com/games/eu/en/topics/19076/",
-        "https://yugipedia.com/wiki/Rarity_Collection_5"
-      ],
-      "verificat_la": "2026-08-27"
-    },
-    "limited pack world championship 2026": {
-      "tier": "B",
-      "categorie": "istoric_dovedit",
-      "lanseaza_la": "2026-08-08",
-      "motiv": "Set colectionar de 21 de carti din sezonul de Campionat Mondial 2025-2026, cu variante de arta Ukiyo-e japoneza si Starlight Rare. Produs de nisa, fara date publice de tiraj.",
-      "surse": [
-        "https://icv2.com/articles/news/view/61069/yu-gi-oh-tcg-2026-product-release-calendar"
-      ],
-      "verificat_la": "2026-08-27"
-    },
-    "beyond the brave": {
-      "tier": "C",
-      "categorie": "evitat",
-      "lanseaza_la": "2026-10-09",
-      "motiv": "Booster de baza din cadenta lunara Konami, cu inca doua boostere de baza imediat dupa (Magnificent Maestros 13 noiembrie, Glorious Victors 4 decembrie). Cererea se dilueaza intre trei lansari in noua saptamani.",
-      "surse": [
-        "https://icv2.com/articles/news/view/61069/yu-gi-oh-tcg-2026-product-release-calendar"
-      ],
-      "verificat_la": "2026-08-27"
-    },
-    "magnificent maestros": {
-      "tier": "C",
-      "categorie": "evitat",
-      "lanseaza_la": "2026-11-13",
-      "motiv": "Booster de baza, al doilea din trei intr-un interval de noua saptamani. Fara raritati garantate — exact tipul de set pe care Konami il reimprima masiv.",
-      "surse": [
-        "https://icv2.com/articles/news/view/61069/yu-gi-oh-tcg-2026-product-release-calendar"
       ],
       "verificat_la": "2026-08-27"
     }

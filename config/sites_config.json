@@ -167,7 +167,7 @@
     },
     {
         "name": "One Piece TCG - Lexshop",
-        "url": "https://www.lexshop.ro/one-piece",
+        "url": "https://www.lexshop.ro/one-piece-card-game/s-instock?_crawl=0",
         "type": "search_page",
         "card_selector": ".product-box",
         "title_selector": ".title",
@@ -190,43 +190,35 @@
         "engine": "http"
     },
     {
-        "name": "Yu-Gi-Oh - Lexshop",
-        "url": "https://www.lexshop.ro/yu-gi-oh-167",
-        "type": "search_page",
-        "card_selector": ".product-box",
-        "title_selector": ".title",
-        "price_selector": ".price",
-        "in_stock_text": "adauga",
-        "profile_folder": "lexshop_profile",
-        "niche": "Yu-Gi-Oh",
-        "engine": "http"
-    },
-    {
-        "name": "One Piece TCG - Tcg-Shop",
-        "url": "https://tcg-shop.ro/category/one-piece/one-piece-card-game",
         "type": "search_page",
         "niche": "One Piece TCG",
         "engine": "http",
-        "card_selector": ".ltn__product-item",
-        "title_selector": ".product-title a",
-        "price_selector": ".product-price span",
-        "image_selector": ".product-img img",
-        "link_selector": ".product-title a",
-        "in_stock_text": "adaugă în coș",
-        "profile_folder": "tcgshop_profile"
+        "card_selector": "li.c-product-grid__wrapper",
+        "title_selector": ".c-product-grid__product-title-link",
+        "price_selector": ".price-value",
+        "image_selector": ".c-product-grid__product-image",
+        "link_selector": ".c-product-grid__product-title-link",
+        "in_stock_text": "",
+        "profile_folder": "hobbygames_profile",
+        "name": "One Piece TCG - HobbyGames",
+        "url": "https://hobbygames.ro/category/269/one-piece-card-game.html"
     },
     {
-        "name": "Yu-Gi-Oh - Tcg-Shop",
-        "url": "https://tcg-shop.ro/category/yu-gi-oh",
+        "name": "One Piece TCG - CardX",
+        "url": "https://www.cardxtcg.ro/one-piece/one-piece-trading-card-game",
         "type": "search_page",
-        "niche": "Yu-Gi-Oh",
+        "niche": "One Piece TCG",
         "engine": "http",
-        "card_selector": ".ltn__product-item",
-        "title_selector": ".product-title a",
-        "price_selector": ".product-price span",
-        "image_selector": ".product-img img",
-        "link_selector": ".product-title a",
-        "in_stock_text": "adaugă în coș",
-        "profile_folder": "tcgshop_profile"
+        "card_selector": ".product-box",
+        "title_selector": "a.title",
+        "price_selector": ".price .text-main",
+        "image_selector": ".listImage",
+        "link_selector": "a.title",
+        "in_stock_text": "",
+        "out_of_stock_text": [
+            "stoc epuizat",
+            "indisponibil"
+        ],
+        "profile_folder": "cardxtcg_profile"
     }
 ]

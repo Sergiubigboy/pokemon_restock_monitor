@@ -158,7 +158,12 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
     found_products = scaneaza_cu_lacat(site)
 
     # ── Inităm site-ul dacă e prima dată când apare ──
-    if site_name not in known_products:
+    # Prima scanare a unui magazin nou doar MEMOREAZĂ raftul, nu notifică:
+    # altfel, în ziua în care adaugi un magazin, tot catalogul lui apare ca
+    # "produs nou" și pleacă zeci de alerte deodată. Restock înseamnă ceva
+    # care nu era acolo data trecută — deci ai nevoie de un "data trecută".
+    prima_scanare = site_name not in known_products
+    if prima_scanare:
         known_products[site_name] = set()
 
     # ── Pre-filtrare: ce produse ar genera notificare ─────────
@@ -167,8 +172,10 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
     # sunt deja în cache-ul permanent și nu costă nimic.
     debug_activ = monitor_state.debug_mode or monitor_state.debug_mode_all
     candidati = []
-    for p in found_products:
+    for p in [] if prima_scanare else found_products:   # prima scanare nu notifică nimic
         nume_mic = p["name"].strip().lower()
+        if p.get("in_stoc") is False:
+            continue          # epuizat — n-are rost sa-l clasificam
         e_vip, _ = match_vip(nume_mic, vip_groups)
         e_negru = any(b.lower() in nume_mic for b in blacklist_keywords if b.strip())
         if e_negru and not e_vip:
@@ -197,8 +204,21 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
         if is_black and not is_vip:
             continue
 
+        # Magazinele care listeaza si produsele epuizate (Gomag: "Stoc epuizat")
+        # le marcheaza in scraper. Cardul conteaza la valid_count — pagina s-a
+        # citit corect, deci nu e "site cazut" nici cand tot raftul e gol. Dar
+        # numele NU intra in current_valid_names, deci pleaca din known_products
+        # si revenirea lui in stoc va fi un produs nou, cu alerta.
+        if p.get("in_stoc") is False:
+            valid_count += 1
+            continue
+
         valid_count += 1
         current_valid_names.add(p_name_lower)
+
+        if prima_scanare:
+            add_product(known_products, site_name, p_name_lower)
+            continue
 
         # Trimite notificare dacă e produs NOU (sau DEBUG)
         debug_trigger = monitor_state.debug_mode or monitor_state.debug_mode_all
@@ -363,6 +383,12 @@ def scaneaza_site(site: dict, known_products: dict, vip_groups: list,
         monitor_state.record_error(f"{site_name}: scraper returnat 0 produse", site_name)
         logging.warning(f"⚠️ [{site_name}] Scraper a returnat 0 produse — JSON păstrat neschimbat. (eșec #{consec})")
         alert_site_failure(site_name, consec)
+
+    if prima_scanare:
+        logging.info(
+            f"🌱 [{site_name}] Prima scanare — am memorat {valid_count} produse "
+            f"ca punct de plecare, fără notificări. Alertele încep de la ciclul următor."
+        )
 
     logging.info(f"📊 [{site_name}] Scanare completă: {valid_count} produse valide.")
 

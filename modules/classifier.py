@@ -39,6 +39,11 @@ import requests
 CLASIFICARI_FILE = os.path.join("config", "product_classifications.json")
 NICHE_RULES_FILE = os.path.join("config", "niche_rules.json")
 
+# Creste-l ori de cate ori se schimba regulile locale de tip sau de set.
+# Clasificarile salvate cu alta versiune se uita la pornire si se recalculeaza.
+#   v2: "huse" ca accesoriu + codurile de set One Piece (OP-15, PRB-02, ...)
+VERSIUNE_REGULI = 2
+
 MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 MAX_NUME_PER_APEL = 40
 TIMEOUT_APEL = 45
@@ -126,8 +131,16 @@ _TIPARE_TIP = [
                          "booster collection", "special collection", "collection box",
                          "vault", "gift bundle", "bundle gift", "collection -",
                          "collection:", "celebrations collection"]),
-    ("accesoriu",       ["sleeve", "binder", "portfolio", "playmat", "album",
-                         "deck box", "breloc", "husa"]),
+    # "huse" (pluralul lui "husa") lipsea: HobbyGames isi numeste sleeve-urile
+    # "Joc de carti One Piece - Huse oficiale pentru carti", deci treceau drept
+    # tip nedeterminat si plecau ca semnalare.
+    # Potrivirea e pe granita de cuvant, deci "sleeve" NU prinde "sleeves" —
+    # de aceea pluralele sunt scrise separat. "plicuri" e cum isi numeste
+    # HobbyGames pachetele de huse ("70 de plicuri"); chiar daca ar nimeri un
+    # booster pack, tipul ala e oricum ignorat pe toate nisele.
+    ("accesoriu",       ["sleeve", "sleeves", "binder", "portfolio", "playmat",
+                         "album", "deck box", "breloc", "husa", "huse",
+                         "plicuri", "card case", "folie protectie", "folii"]),
     ("plus",            ["plus ", "plush", "jucarie de plus"]),
     ("single_card",     ["carte single", "single card", "graded card"]),
     # Cel mai general la final: un "booster" ramas dupa toate testele de mai
@@ -207,6 +220,12 @@ def seturi_cunoscute(nisa: str) -> list:
 
 _RE_COD_LEGO = re.compile(r"(?<!\d)(\d{5})(?!\d)")
 
+# One Piece isi numeroteaza seturile: OP-17, EB-04, PRB-02, ST-44, DP-07.
+# Magazinele romanesti scriu la fel de des "OP - 15" sau "OP15", asa ca fara
+# normalizare aici setul nu se potriveste cu cheia din set_intelligence si
+# un display OP-17 (tier S) ar pleca ca simpla semnalare.
+_RE_COD_ONE_PIECE = re.compile(r"(?<!\w)(op|eb|prb|st|dp)\s*-?\s*(\d{2})(?!\d)")
+
 
 def detecteaza_set_local(nume: str, seturi=None, nisa: str = "") -> str:
     """Numele setului, daca apare in text. Sir gol altfel."""
@@ -220,10 +239,24 @@ def detecteaza_set_local(nume: str, seturi=None, nisa: str = "") -> str:
             return cod.group(1)
 
     lista = seturi if seturi is not None else seturi_cunoscute(nisa)
+
+    # Codul de set One Piece, daca exista si e unul cercetat, bate potrivirea
+    # pe nume: e scris identic in toate magazinele, spre deosebire de subtitlu.
+    cod_op = ""
+    if nisa == "One Piece TCG" or _contine(text, "one piece"):
+        gasit = _RE_COD_ONE_PIECE.search(text)
+        if gasit:
+            cod_op = f"{gasit.group(1)}-{gasit.group(2)}"
+            if cod_op in [_normalizeaza(s) for s in lista]:
+                return cod_op
+
     for s in lista:
         if _contine(text, _normalizeaza(s)):
             return _normalizeaza(s)
-    return ""
+
+    # Codul necercetat e tot mai bun decat nimic: tine id-ul canonic distinct
+    # intre magazine, ca verdictele Good/Bad sa nu se reverse peste tot setul.
+    return cod_op
 
 
 def detecteaza_linie_local(nume: str, nisa: str) -> str:
@@ -335,6 +368,21 @@ def _incarca_cache() -> dict:
         except Exception as e:
             logging.warning(f"⚠️ [Classifier] Nu am putut citi cache-ul: {e}")
             _cache = {}
+
+        # Cache-ul e permanent tocmai ca sa nu reintrebam Gemini. Dar cand
+        # REGULILE locale se schimba (un tip nou, un cod de set nou), verdictele
+        # vechi raman gresite pentru totdeauna — un display OP-15 clasificat
+        # inainte cu set gol ar ramane simpla semnalare si dupa ce setul a intrat
+        # in research. Stampila de versiune sterge exact intrarile invechite.
+        vechi = [k for k, v in _cache.items()
+                 if isinstance(v, dict) and v.get("reguli_v") != VERSIUNE_REGULI]
+        if vechi:
+            for k in vechi:
+                del _cache[k]
+            logging.info(
+                f"♻️ [Classifier] Reguli noi (v{VERSIUNE_REGULI}) — am uitat "
+                f"{len(vechi)} clasificari vechi. Se recalculeaza local, fara cost."
+            )
     return _cache
 
 
@@ -465,7 +513,7 @@ def clasifica(nume_lista: list, nisa: str, cheie_api=None, foloseste_llm=True) -
                 de_intrebat.append(nume)
             else:
                 # Verdictele locale sigure intra si ele in cache.
-                cache[_cheie(nume, nisa)] = local
+                cache[_cheie(nume, nisa)] = {**local, "reguli_v": VERSIUNE_REGULI}
         if len(cache) > 0:
             _salveaza_cache()
 
@@ -515,7 +563,7 @@ def clasifica(nume_lista: list, nisa: str, cheie_api=None, foloseste_llm=True) -
             for nume, verdict in primite.items():
                 rezultat[nume] = verdict
                 if verdict["tip"] not in ("", "necunoscut"):
-                    cache[_cheie(nume, nisa)] = verdict
+                    cache[_cheie(nume, nisa)] = {**verdict, "reguli_v": VERSIUNE_REGULI}
             _salveaza_cache()
 
         numar_relevante = sum(1 for n in lot if rezultat[n].get("relevant"))

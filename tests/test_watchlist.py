@@ -15,13 +15,22 @@ import shutil
 import sys
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from modules import watchlist as wl
 
-AZI = date(2026, 8, 18)
+# Ancorat pe ziua curenta, nu pe o data fixa. Cu o data fixa, testele
+# treceau azi si cadeau peste doua saptamani: verificarea de prospetime
+# a pretului de revanzare (stale_after_days) compara mereu cu ziua reala,
+# iar testul de integrare din main.py nu poate injecta alta zi.
+AZI = date.today()
+
+
+def _zile(n: int) -> str:
+    """Data relativa la AZI, in format ISO."""
+    return (AZI + timedelta(days=n)).isoformat()
 
 KRIT = "Pokemon TCG - Krit"
 LEXSHOP = "Pokemon TCG - Lexshop"
@@ -31,7 +40,7 @@ SMYK = "Pokemon TCG - SMYK"
 def _watchlist_test() -> dict:
     """Watchlist minimal dar realist, calibrat pe exemplul din brief."""
     return {
-        "_meta": {"valid_until": "2026-08-24T19:00:00+03:00"},
+        "_meta": {"valid_until": _zile(6) + "T19:00:00+03:00"},
         "defaults": {
             "platform_fee_pct": 0.1,
             "shipping_cost_ron": 20,
@@ -57,12 +66,12 @@ def _watchlist_test() -> dict:
                 "resale": {
                     "median_ron": 520,
                     "source": "cardmarket+vinted-ro",
-                    "checked_at": "2026-08-17",
+                    "checked_at": _zile(-1),
                     "liquidity_30d": 22,
                     "confidence": "medium",
                 },
                 "thresholds": {"min_profit_ron": 120, "min_roi_pct": 0.35},
-                "expires_at": "2026-11-01",
+                "expires_at": _zile(74),
             },
             {
                 "id": "pkm-core-etb",
@@ -78,7 +87,7 @@ def _watchlist_test() -> dict:
                 "resale": {
                     "median_ron": 445,
                     "source": "vinted-ro+olx",
-                    "checked_at": "2026-08-17",
+                    "checked_at": _zile(-1),
                     "liquidity_30d": 31,
                     "confidence": "high",
                 },
@@ -93,7 +102,7 @@ def _watchlist_test() -> dict:
                 "label": "Item oprit de agent",
                 "match": {"include_any": ["etb"]},
                 "buy": {"max_price_ron": 900, "sites": [KRIT], "max_qty_per_drop": 1},
-                "resale": {"median_ron": 5000, "checked_at": "2026-08-17", "liquidity_30d": 99},
+                "resale": {"median_ron": 5000, "checked_at": _zile(-1), "liquidity_30d": 99},
                 "thresholds": {"min_profit_ron": 0, "min_roi_pct": 0},
             },
             {
@@ -104,7 +113,7 @@ def _watchlist_test() -> dict:
                 "label": "LEGO GWP",
                 "match": {"include_any": ["gwp", "gift with purchase"]},
                 "buy": {"max_price_ron": 0, "sites": [KRIT], "max_qty_per_drop": 2},
-                "resale": {"median_ron": 260, "checked_at": "2026-08-17", "liquidity_30d": 9},
+                "resale": {"median_ron": 260, "checked_at": _zile(-1), "liquidity_30d": 9},
                 "thresholds": {"min_profit_ron": 0, "min_roi_pct": 0},
             },
             {
@@ -115,7 +124,7 @@ def _watchlist_test() -> dict:
                 "label": "LEGO EOL Icons",
                 "match": {"include_any": ["10316"]},
                 "buy": {"max_price_ron": 2105, "sites": [KRIT], "max_qty_per_drop": 1},
-                "resale": {"median_ron": 3100, "checked_at": "2026-08-17", "liquidity_30d": 6},
+                "resale": {"median_ron": 3100, "checked_at": _zile(-1), "liquidity_30d": 6},
                 "thresholds": {"min_profit_ron": 400, "min_roi_pct": 0.3},
                 "shipping_cost_ron": 50,
             },
@@ -129,7 +138,7 @@ def _watchlist_test() -> dict:
                 "buy": {"max_price_ron": 490, "sites": [KRIT], "max_qty_per_drop": 3},
                 "resale": {
                     "median_ron": 790,
-                    "checked_at": "2026-07-01",   # 48 de zile vechime fata de AZI
+                    "checked_at": _zile(-48),     # peste stale_after_days=14
                     "liquidity_30d": 18,
                 },
                 "thresholds": {"min_profit_ron": 150, "min_roi_pct": 0.4},
@@ -142,9 +151,9 @@ def _watchlist_test() -> dict:
                 "label": "Experiment Hot Wheels",
                 "match": {"include_any": ["rlc", "red line club"]},
                 "buy": {"max_price_ron": 160, "sites": [KRIT], "max_qty_per_drop": 5},
-                "resale": {"median_ron": 290, "checked_at": "2026-08-17", "liquidity_30d": 12},
+                "resale": {"median_ron": 290, "checked_at": _zile(-1), "liquidity_30d": 12},
                 "thresholds": {"min_profit_ron": 80, "min_roi_pct": 0.55},
-                "expires_at": "2026-08-01",       # deja trecut fata de AZI
+                "expires_at": _zile(-17),         # deja trecut fata de AZI
             },
         ],
     }
@@ -364,7 +373,7 @@ class TestContorZilnic(BazaWatchlist):
         wl.record_alert("pkm-30th-etb", azi=AZI)
         wl.record_alert("pkm-30th-etb", azi=AZI)
         self.assertEqual(wl.alerts_today("pkm-30th-etb", azi=AZI), 2)
-        self.assertEqual(wl.alerts_today("pkm-30th-etb", azi=date(2026, 8, 19)), 0)
+        self.assertEqual(wl.alerts_today("pkm-30th-etb", azi=AZI + timedelta(days=1)), 0)
 
     def test_contorul_e_separat_pe_item(self):
         wl.record_alert("pkm-30th-etb", azi=AZI)
@@ -410,8 +419,8 @@ class TestLoadWatchlist(unittest.TestCase):
 
     def test_detecteaza_watchlist_expirat(self):
         incarcat = _watchlist_test()
-        self.assertFalse(wl.watchlist_is_stale(incarcat, azi=date(2026, 8, 20)))
-        self.assertTrue(wl.watchlist_is_stale(incarcat, azi=date(2026, 9, 1)))
+        self.assertFalse(wl.watchlist_is_stale(incarcat, azi=AZI + timedelta(days=2)))
+        self.assertTrue(wl.watchlist_is_stale(incarcat, azi=AZI + timedelta(days=14)))
 
 
 class TestFisierulReal(unittest.TestCase):
